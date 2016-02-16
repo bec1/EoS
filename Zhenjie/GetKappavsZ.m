@@ -1,0 +1,31 @@
+function [Kappa,Kappa0,Kappat] = GetKappavsZ( n,z,omega,pixelsize )
+%use \kappa=-1/n^2 dn/dV to get the compressibility of the fermi gas
+
+Z=z*pixelsize;
+mli=6*1.6738232*10^(-27);
+N=length(n);
+Kappa=n*0;
+Kappa0=Kappa;
+Kappat=Kappa;
+V=1/2*mli*omega^2*Z.^2;
+dndVs=ns*0;
+dndV=ns*0;
+for i=1:N
+    %first do some local smoothing
+    %define the start and end point of smoothing
+    k1=max(1,i-20);
+    k2=min(N,i+20);
+    Vf=Vs(k1:k2);nf=ns(k1:k2);
+    %Do a 6-order polynomial fitting
+    p=polyfit(Vf,nf,6);
+    q=polyder(p);
+    dndVs(i)=polyval(q,Vs(i));
+    dndV(I(i))=polyval(q,Vs(i));
+end
+
+
+
+scatter(Vs,dndVs);
+
+end
+
