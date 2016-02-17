@@ -56,7 +56,7 @@ if 1
     absimg(Change)=1;
 end
 
-absimg = log(absimg);
+absimg = log(absimg) + (data(:,:,2)-data(:,:,1))/(630);
 
 %% Setup bg rect
 width = 20;
