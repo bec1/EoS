@@ -1,4 +1,4 @@
-function [ k_U, P_U, U_i ] = EoS_nz_KvsP( z_i, n_z, varargin )
+function [ k_U, P_U, U_i, EF_U, n_U ] = EoS_nz_KvsP( z_i, n_z, varargin )
 %% Information
 % Extract from n(z) the kappa(U) and P(U)
 %
@@ -23,19 +23,19 @@ uconst.massLi6 = 9.988346e-27;
 
 % Experimental Constants, CHANGE ACCORDINGLY WITH THE EXPERIMENT
 econst.trapw = 2*pi*23.9;
-econst.px = 1.44e-6;
 
 % Other variables
 total_bins = 40;
 create_plot = 1;
+plot_maxU = 2; % kHz
 
 % Process inputs
 for i = 1:2:length(varargin)
     switch varargin{i}
         case 'bins', total_bins = varargin{i+1};
         case 'trap omega', econst.trapw = varargin{i+1};
-        case 'pixel', econst.px = varargin{i+1};
         case 'plot', create_plot = varargin{i+1};
+        case 'plot_maxU', plot_maxU = varargin{i+1};
     end
 end
 
@@ -74,21 +74,21 @@ if create_plot
     plot(z_i*1e6,U_z/(uconst.h*1e3)); ylabel('U (kHz)');
 
     subplot(2,2,2);
-    grid on;  title('Density and Fermi energy vs U'); xlabel('U (kHz)'); xlim([U_i(1),U_i(end)]/(uconst.h*1e3)); 
+    grid on;  title('Density and Fermi energy vs U'); xlabel('U (kHz)'); xlim([0,plot_maxU]); 
     yyaxis left
     plot(U_i/(uconst.h*1e3),n_U);  ylabel('n (m^{-3})');
     yyaxis right
     plot(U_i/(uconst.h*1e3),EF_U/(uconst.h*1e3));  ylabel('E_F (kHz)');
 
     subplot(2,2,3);
-    grid on;  title('Compressibility and Pressure vs U');  xlabel('U (kHz)'); xlim([U_i(1),U_i(end)]/(uconst.h*1e3));
+    grid on;  title('Compressibility and Pressure vs U');  xlabel('U (kHz)'); xlim([0,plot_maxU]);
     yyaxis left
     plot(U_i(1:end-1)/(uconst.h*1e3),k_U); ylim([0 5]);  ylabel('\kappa / \kappa_0');
     yyaxis right
     plot(U_i(1:end-1)/(uconst.h*1e3),P_U); ylim([0 1]); ylabel('P / P_0');
 
     subplot(2,2,4);
-    plot(P_U,k_U,'r.'); xlim([0 1]); ylim([0 4]);
+    plot(P_U,k_U,'r.'); xlim([0 4]); ylim([0 4]);
     title('\kappa / \kappa_0 vs P / P_0'); xlabel('P / P_0'); ylabel('\kappa / \kappa_0'); grid on;
 end
 
