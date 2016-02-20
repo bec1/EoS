@@ -1,7 +1,7 @@
 omega=23.9*2*pi;pixelsize=1.44e-6;
 
-filename='02-15-2016_23_08_42_top.fits';
-folder='\\Elder-pc\j\Elder Backup Raw Images\2016\2016-02\2016-02-15\';
+filename='02-12-2016_21_33_32_top.fits';
+folder='\\Elder-pc\j\Elder Backup Raw Images\2016\2016-02\2016-02-12\';
 
 ROI1=[200,60,300,380];
 ROI2=[200,185,336,270];
