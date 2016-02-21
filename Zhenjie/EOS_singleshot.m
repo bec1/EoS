@@ -1,7 +1,9 @@
-omega=23.9*2*pi;pixelsize=1.44e-6;
+omega=23.0*2*pi;pixelsize=1.44e-6;  mli=9.988346*10^(-27); hbar= 6.62607/(2*pi)*10^(-34);
 
 filename='02-15-2016_21_04_37_top.fits';
-folder='\\Elder-pc\j\Elder Backup Raw Images\2016\2016-02\2016-02-15\';
+%folder='\\Elder-pc\j\Elder Backup Raw Images\2016\2016-02\2016-02-15\';
+folder = '/Users/Julian/Dropbox (MIT)/BEC1/Image Data and Cicero Files/Data - Raw Images/2016/2016-02/2016-02-15/';
+addpath('/Users/Julian/Documents/MIT/MatlabPrograms/VirialExpansion/')
 
 ROI1=[200,60,300,380];
 ROI2=[200,185,336,270];
@@ -54,12 +56,18 @@ Pt((Vs>1.25e-30))=[];
 Kt((Vs>1.25e-30))=[];
 Vs(Vs>1.25e-30)=[];
 
+[ KappaTilde, PTilde, Z_vec ] = ...
+    VirialUnitarity(  1.95, 4, 1000 , 3 );
+
 scatter(Pt,Kt)
 xlim([0,4])
 ylim([0,4])
+hold on
+plot(PTilde,KappaTilde)
+hold off
 
 VkHz=Vs/(hbar*2*pi)/1000;
-scatter(VkHz,Pt)
-scatter(VkHz,Kt)
-% scatter(Vs,Pt)
+%scatter(VkHz,Pt)
+%scatter(VkHz,Kt)
+%scatter(Vs,Pt)
 % ylim([0,3])
