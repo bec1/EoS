@@ -49,10 +49,11 @@ n_U = zeros(total_bins,1);
 whichbin = discretize(U_z,U_i);
 for i=1:total_bins
     binMembers = n_z(whichbin == i);
+    if isempty(binMembers), binMembers = 0; end
     n_U(i) = mean(binMembers);
 end
 U_i = U_i(1:end-1); % Fixing the extra
-EF_U = uconst.hbar^2 / (2*uconst.massLi6) * (6*pi^2*n_U).^(2/3);
+EF_U = real(uconst.hbar^2 / (2*uconst.massLi6) * (6*pi^2*n_U).^(2/3));
 
 % Calculate P/P0 and k/k0
 P_U = zeros(total_bins-1,1);
@@ -62,6 +63,13 @@ for i = 1:total_bins-1, P_U(i) = trapz(U_i(i:end),n_U(i:end)); end
 P_U = P_U ./ (2/5*n_U(1:end-1).*EF_U(1:end-1)) ;
 
 k_U = - diff(EF_U) / (U_i(2)-U_i(1)); 
+
+% for i = 1:length(k_U)
+%     t = 4;
+%     [p,~,mu] = polyfit(U_i(max(1,i-t):min(length(U_i),i+t)), EF_U(max(1,i-t):min(length(U_i),i+t)), 2);
+%     k_U(i) =  - (polyval(p,U_i(i+1),[],mu) - polyval(p,U_i(i),[],mu)) / ((U_i(i+1)-U_i(i)));
+% %     k_U(i) = polyval(polyder(p),U_i(i));
+% end
 
 %% Figure
 if create_plot
