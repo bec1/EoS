@@ -1,9 +1,14 @@
 omega=23.0*2*pi;pixelsize=1.44e-6;  mli=9.988346*10^(-27); hbar= 6.62607/(2*pi)*10^(-34);
 
+<<<<<<< HEAD
 filename='02-15-2016_21_04_37_top.fits';
 %folder='\\Elder-pc\j\Elder Backup Raw Images\2016\2016-02\2016-02-15\';
 folder = '/Users/Julian/Dropbox (MIT)/BEC1/Image Data and Cicero Files/Data - Raw Images/2016/2016-02/2016-02-15/';
 addpath('/Users/Julian/Documents/MIT/MatlabPrograms/VirialExpansion/')
+=======
+filename='02-15-2016_23_08_42_top.fits';
+folder='\\Elder-pc\j\Elder Backup Raw Images\2016\2016-02\2016-02-15\';
+>>>>>>> origin/master
 
 ROI1=[200,60,300,380];
 ROI2=[200,185,336,270];
@@ -52,9 +57,9 @@ scatter(Vs,Kt)
 Pt((Vs<1e-32))=[];
 Kt((Vs<1e-32))=[];
 Vs(Vs<1e-32)=[];
-Pt((Vs>1.25e-30))=[];
-Kt((Vs>1.25e-30))=[];
-Vs(Vs>1.25e-30)=[];
+Pt((Vs>5e-29))=[];
+Kt((Vs>5e-29))=[];
+Vs(Vs>5e-29)=[];
 
 [ KappaTilde, PTilde, Z_vec ] = ...
     VirialUnitarity(  1.95, 4, 1000 , 3 );
@@ -66,8 +71,15 @@ hold on
 plot(PTilde,KappaTilde)
 hold off
 
+<<<<<<< HEAD
 VkHz=Vs/(hbar*2*pi)/1000;
 %scatter(VkHz,Pt)
 %scatter(VkHz,Kt)
 %scatter(Vs,Pt)
+=======
+% VkHz=Vs/(hbar*2*pi)/1000;
+% scatter(VkHz,Pt)
+% scatter(VkHz,Kt)
+% scatter(Vs,Pt)
+>>>>>>> origin/master
 % ylim([0,3])

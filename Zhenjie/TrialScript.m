@@ -34,27 +34,27 @@ scatter(Vs,dndVs);
 % 
 % % try n vs z
 
-Z=z*pixelsize;
-mli=6*1.6738232*10^(-27);
-N=length(n);
-Kappa=n*0;
-Kappa0=Kappa;
-Kappat=Kappa;
-dVdz=mli*omega^2*Z;
-
-for i=1:N
-    %first do some local smoothing
-    %define the start and end point of smoothing
-    k1=max(1,i-20);
-    k2=min(N,i+20);
-    Zf=Z(k1:k2);nf=n(k1:k2);
-    %Do a 2nd-ord polynomial fitting
-    p=polyfit(Zf,nf,6);
-    q=polyder(p);
-    dndV(i)=polyval(q,Z(i))/dVdz(i);
-end
-
-scatter(Z,dndV)
+% Z=z*pixelsize;
+% mli=6*1.6738232*10^(-27);
+% N=length(n);
+% Kappa=n*0;
+% Kappa0=Kappa;
+% Kappat=Kappa;
+% dVdz=mli*omega^2*Z;
+% 
+% for i=1:N
+%     %first do some local smoothing
+%     %define the start and end point of smoothing
+%     k1=max(1,i-20);
+%     k2=min(N,i+20);
+%     Zf=Z(k1:k2);nf=n(k1:k2);
+%     %Do a 2nd-ord polynomial fitting
+%     p=polyfit(Zf,nf,6);
+%     q=polyder(p);
+%     dndV(i)=polyval(q,Z(i))/dVdz(i);
+% end
+% 
+% scatter(Z,dndV)
 
 
 
@@ -79,7 +79,7 @@ kF=real((6*pi^2*ns).^(1/3));
 EF=hbar^2*kF.^2/(2*mli);
 P0=(2/5)*ns.*EF;
 
-P0=smooth(P0)';
+P0=smooth(P0);
 
 Pt=P./P0;
 scatter(Vs,Pt)
@@ -90,7 +90,7 @@ Z=z*pixelsize;
 V=1/2*mli*omega^2*Z.^2;
 [Vs,I]=sort(V);
 ns=n(I);
-[P,P0,Pt] = GetPvsV( ns,Vs );
+[P,P0,Pt] = GetPvsV( ns,Vs' );
 scatter(Vs,Pt)
 ylim([0,4])
 Kt=GetKappavsV( ns,Vs );

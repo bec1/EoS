@@ -56,7 +56,7 @@ if 1
     absimg(Change)=1;
 end
 
-absimg = log(absimg);
+absimg = log(absimg) + (data(:,:,2)-data(:,:,1))/(630);
 
 %% Setup bg rect
 width = 20;
@@ -69,7 +69,7 @@ t2 = imcrop(absimg,bgrect);
 
 bgpixels = bgrect(3) * bgrect(4) - roirect(3) * roirect(4);
 bgvalue = ( sum(t2(:)) - sum(t1(:)) ) / bgpixels;
-
+disp(bgvalue);
 absimg = absimg - bgvalue;
 t1 = imcrop(absimg,roirect);
 t2 = imcrop(absimg,bgrect);
