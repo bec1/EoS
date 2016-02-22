@@ -1,6 +1,9 @@
 function [kappa,p,nofv,edges] = eos_v2(n)
   
 %% Get n as a function of V
+
+    n=n*1.5;
+    
     points = 13/9  * (1:length(n));
     TFfit = fitTF(n,points);
     points = points-TFfit.x0;
@@ -8,8 +11,8 @@ function [kappa,p,nofv,edges] = eos_v2(n)
     [nofv,nofv_errors,edges] = getnofv(n,V);
     
     figure(2)
-    %errorbar(edges,nofv,nofv_errors)
-    plot(V,n);
+errorbar(edges,nofv,nofv_errors)
+%     plot(V,n);
 
     figure(3)
     [kappa,p] = getKP(nofv,edges);
@@ -22,7 +25,7 @@ end
 
 function   [nofv,nofv_errors,edges] = getnofv(n,V)
 %% Get n as a function of v by binning
-    [~,edges,bins] = histcounts(V*1e34,110);
+    [~,edges,bins] = histcounts(V*1e34,100);
     edges = edges*1e-34;
     for i=1:length(edges)
         binlist = [];

@@ -1,6 +1,8 @@
 function [k_t,p_t] = getKP(nofv,edges)
+
     edges = edges*10;
-    nofv(nofv<1e14) = 0;
+    nofv(nofv<1e15) = 0;
+    
     nofv = smooth(nofv)';
     
     N= length(nofv);
@@ -10,8 +12,8 @@ function [k_t,p_t] = getKP(nofv,edges)
     for i=1:N
         %first do some local smoothing
         %define the start and end point of smoothing
-        k1=max(1,i-5);
-        k2=min(N,i+5);
+        k1=max(1,i-10);
+        k2=min(N,i+10);
         Vf=Vs(k1:k2);nf=ns(k1:k2);
         %Do a 2nd-ord polynomial fitting
         p=polyfit(Vf,nf,2);
@@ -44,4 +46,9 @@ function [k_t,p_t] = getKP(nofv,edges)
     
     plot(p_t,k_t,'.','MarkerSize',20)
     xlim([0 1.2])
+%     figure;
+%     plot(v,k_t*1e14);
+%     hold all
+%     plot(v,nofv)
+%     ylim([0 max(nofv)])
 end
