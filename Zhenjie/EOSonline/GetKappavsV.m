@@ -14,8 +14,8 @@ EF=smooth(EF);
 for i=1:N
     %first do some local smoothing
     %define the start and end point of smoothing
-    k1=max(1,i-30);
-    k2=min(N,i+30);
+    k1=max(1,i-3);
+    k2=min(N,i+3);
     Vf=V(k1:k2);EFf=EF(k1:k2);
     %Do a 2nd-ord polynomial fitting
     p=polyfit(Vf,EFf,2);

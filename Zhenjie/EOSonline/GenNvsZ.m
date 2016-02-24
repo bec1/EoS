@@ -19,7 +19,7 @@ hold on
 plot(x1,Yt,'r.','MarkerSize',5);
 plot(x2,Yt,'r.','MarkerSize',5);
 caxis([0,45]);
-questdlg('I am just giving you some time to check the out line');
+% questdlg('I am just giving you some time to check the out line');
 close(h)
 %check end
 Y=ROI1(2):ROI1(4);

@@ -11,13 +11,11 @@ for i=1:N
     Ptlist=[Ptlist;Ptsel];
     Ktlist=[Ktlist;Ktsel];
 end
-scatter(Ptlist,Ktlist)
-
 PtBinMin=0;
 PtBinMax=5;
-dPt=0.02;
+dPt=0.005;
 Ptbin=PtBinMin:dPt:PtBinMax;
-Nbin=size(Ptbin,2);
+Nbin=size(Ptbin);
 M=length(Ktlist);
 KtBinList=cell(1,Nbin);
 KtMean=zeros(1,Nbin);
@@ -35,11 +33,9 @@ for i=1:M
 end
 
 for i=1:Nbin
-    KtMean(i)=mean(KtBinList{i});
-    KtStd(i)=std(KtBinList{i});
+    KtMean=mean();
 end
-errorbar(Ptbin,KtMean,KtStd)
-scatter(Ptbin,KtMean);
+
 
 % %The hope is to use this function as an easy way to do online fitting for
 % %EoS data
