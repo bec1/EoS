@@ -104,23 +104,23 @@ if create_plot
     subplot(2,2,1);
     grid on; title('Density and Potential vs z');  xlim([z_i(1),z_i(end)]*1e6); xlabel('z (\mum)');
     yyaxis left
-    plot(z_i*1e6,n_z);  ylabel('n (m^{-3})');
+    plot(z_i*1e6,n_z,'.');  ylabel('n (m^{-3})');
     yyaxis right
-    plot(z_i*1e6,U_z/(uconst.h*1e3)); ylabel('U (kHz)');
+    plot(z_i*1e6,U_z/(uconst.h*1e3),'.'); ylabel('U (kHz)');
 
     subplot(2,2,2);
     grid on;  title('Density and Fermi energy vs U'); xlabel('U (kHz)'); xlim([0,plot_maxU]); 
     yyaxis left
-    plot(U_i/(uconst.h*1e3),n_U);  ylabel('n (m^{-3})');
+    plot(U_i/(uconst.h*1e3),n_U,'.');  ylabel('n (m^{-3})');
     yyaxis right
-    plot(U_i/(uconst.h*1e3),EF_U/(uconst.h*1e3));  ylabel('E_F (kHz)');
+    plot(U_i/(uconst.h*1e3),EF_U/(uconst.h*1e3),'.');  ylabel('E_F (kHz)');
 
     subplot(2,2,3);
     grid on;  title('Compressibility and Pressure vs U');  xlabel('U (kHz)'); xlim([0,plot_maxU]);
     yyaxis left
-    plot(U_i(1:end-1)/(uconst.h*1e3),k_U); ylim([0 5]);  ylabel('\kappa / \kappa_0');
+    plot(U_i(1:end-1)/(uconst.h*1e3),k_U,'.'); ylim([0 5]);  ylabel('\kappa / \kappa_0');
     yyaxis right
-    plot(U_i(1:end-1)/(uconst.h*1e3),P_U); ylim([0 1]); ylabel('P / P_0');
+    plot(U_i(1:end-1)/(uconst.h*1e3),P_U,'.'); ylim([0 5]); ylabel('P / P_0');
 
     subplot(2,2,4);
     plot(P_U(index1:index2),k_U(index1:index2),'r.'); xlim([0 4]); ylim([0 4]);
