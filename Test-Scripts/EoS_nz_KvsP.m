@@ -75,17 +75,20 @@ P_U = zeros(length(EF_U)-1,1);
 k_U = zeros(length(EF_U)-1,1);
 
 % Calculate P_U
-for i = 1:length(P_U), P_U(i) = trapz(U_i(i:end),n_U(i:end)); end
+% for i = 1:length(P_U), P_U(i) = trapz(U_i(i:end),n_U(i:end)); end
+for i = 1:length(P_U), P_U(i) = sum(n_U(i:end))*(U_i(2)-U_i(1)); end
 P_U = P_U ./ (2/5*n_U(1:end-1).*EF_U(1:end-1)) ;
 
 % Calculate k_U
 k_U = - diff(EF_U) / (U_i(2)-U_i(1));
 
-warning('off','MATLAB:polyfit:RepeatedPointsOrRescale');
-for i = 1:length(k_U)
-    t = diffsize;
-    p = polyfit(U_i(max(1,i-t):min(length(U_i),i+t)), EF_U(max(1,i-t):min(length(U_i),i+t)), 2);
-    k_U(i) = - polyval(polyder(p),U_i(i));
+if diffsize ~= 0
+    warning('off','MATLAB:polyfit:RepeatedPointsOrRescale');
+    for i = 1:length(k_U)
+        t = diffsize;
+        p = polyfit(U_i(max(1,i-t):min(length(U_i),i+t)), EF_U(max(1,i-t):min(length(U_i),i+t)), 2);
+        k_U(i) = - polyval(polyder(p),U_i(i));
+    end
 end
 
 % Limit the range of U for P_U and k_U
