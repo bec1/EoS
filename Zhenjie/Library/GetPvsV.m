@@ -4,8 +4,7 @@ function [P,P0,Pt] = GetPvsV( n,V )
 mli=6*1.6738232*10^(-27);
 N=length(n);
 P=n*0;
-% ns=smooth(n);
-ns=n;
+ns=smooth(n);
 %do the integral to get P
 for i=1:N-1
     intfun=ns(i:end);
@@ -18,7 +17,8 @@ hbar=1.0545718*10^(-34);
 kF=real((6*pi^2*ns).^(1/3));
 EF=hbar^2*kF.^2/(2*mli);
 P0=(2/5)*ns.*EF;
+P0=smooth(P0);
+
 Pt=P./P0;
 end
-
 

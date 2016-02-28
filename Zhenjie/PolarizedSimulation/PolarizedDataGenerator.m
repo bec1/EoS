@@ -10,7 +10,7 @@
 %% Input parameters
 
 % Select T/TF and density in center of trap
-TTilde = 0.25;
+TTilde = 0.1;
 n0 = 3*10^(14); % in 1/m^3
 
 % Select axial trapping frequency
@@ -81,7 +81,8 @@ save('polarized_simulated_T0_1_noise_hires.mat','n_simulated','y_vec',...
     'n_simulated_noise','PTilde','KappaTilde')
 
 %%Generate 20 noisy data dets
-n_simulated_noise_list=cell(20,1);
-for i=1:50
+N=20;
+n_simulated_noise_list=cell(N,1);
+for i=1:N
     n_simulated_noise_list{i}=awgn(n_simulated,25,'measured');
 end

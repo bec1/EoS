@@ -1,4 +1,4 @@
-function [P,P0,Pt] = GetPvsV( n,V )
+function [P,P0,Pt] = GetPvsVSimps( n,V )
 %UNTITLED2 Summary of this function goes here
 %   n,V :n(V) V should already been sorted
 mli=6*1.6738232*10^(-27);
@@ -9,7 +9,7 @@ ns=n;
 %do the integral to get P
 for i=1:N-1
     intfun=ns(i:end);
-    P(i)=trapz(V(i:end),intfun);
+    P(i)=simps(V(i:end),intfun);
 end
 P(N)=0;
 
