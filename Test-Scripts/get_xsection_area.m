@@ -1,4 +1,7 @@
-function [ area, data2 ] = get_xsection_area( data, ycuts, pixelonatom )
+function [ area, data2 ] = get_xsection_area( data, ycuts, pixelonatom, makeplot )
+
+% Inputs
+if nargin<4, makeplot = 0; end
 
 % fit circles to cross sections
 leftedge = ones(size(ycuts));
@@ -21,24 +24,26 @@ rads = (rfitres(zout) - lfitres(zout))/2;
 area = pi * rads.^2 * pixelonatom^2;
 
 % Make plots
-figure;
-ax1 = subplot(1,2,1);
-imshow(data,[0,1.5]); set(ax1,'YDir','normal'); 
-hold on;
-for i = 1:size(ycuts,1)
-    plot(ax1,leftedge(i),ycuts(i),'rs');
-    plot(ax1,rightedge(i),ycuts(i),'rs');
-end
-plot(ax1,lfitres(zout),zout,'g-');
-plot(ax1,rfitres(zout),zout,'g-');
-hold off;
-title('Fitting circles to slices');
+if makeplot
+    figure;
+    ax1 = subplot(1,2,1);
+    imshow(data,[0,1.5]); set(ax1,'YDir','normal'); 
+    hold on;
+    for i = 1:size(ycuts,1)
+        plot(ax1,leftedge(i),ycuts(i),'rs');
+        plot(ax1,rightedge(i),ycuts(i),'rs');
+    end
+    plot(ax1,lfitres(zout),zout,'g-');
+    plot(ax1,rfitres(zout),zout,'g-');
+    hold off;
+    title('Fitting circles to slices');
 
-ax2 = subplot(1,2,2);
-plot(zout*pixelonatom*10^6,area*10^9,'r.');
-xlabel('Z (um)');
-ylabel('Area (10^{-9} m^2)');
-title('Cross sectional area vs z');
+    ax2 = subplot(1,2,2);
+    plot(zout*pixelonatom*10^6,area*10^9,'r.');
+    xlabel('Z (um)');
+    ylabel('Area (10^{-9} m^2)');
+    title('Cross sectional area vs z');
+end
 
 % Flattening
 data2 = data;

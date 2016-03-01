@@ -11,11 +11,13 @@ for i=1:N
     Ptlist=[Ptlist;Ptsel];
     Ktlist=[Ktlist;Ktsel];
 end
+scatter(Ptlist,Ktlist)
+
 PtBinMin=0;
-PtBinMax=5;
-dPt=0.005;
+PtBinMax=7;
+dPt=0.02;
 Ptbin=PtBinMin:dPt:PtBinMax;
-Nbin=size(Ptbin);
+Nbin=size(Ptbin,2);
 M=length(Ktlist);
 KtBinList=cell(1,Nbin);
 KtMean=zeros(1,Nbin);
@@ -33,9 +35,13 @@ for i=1:M
 end
 
 for i=1:Nbin
-    KtMean=mean();
+    KtMean(i)=mean(KtBinList{i});
+    KtStd(i)=std(KtBinList{i});
 end
+errorbar(Ptbin,KtMean,KtStd)
+scatter(Ptbin,KtMean);
 
+[ KappaTilde, PTilde, ~, ~ ] = VirialUnitarity(  PTildeMin, PTildeMax, LogPoints , order );
 
 % %The hope is to use this function as an easy way to do online fitting for
 % %EoS data

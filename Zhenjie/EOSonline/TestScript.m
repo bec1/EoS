@@ -13,8 +13,9 @@ for i=1:N
 end
 scatter(Ptlist,Ktlist)
 
+%%
 PtBinMin=0;
-PtBinMax=5;
+PtBinMax=7;
 dPt=0.02;
 Ptbin=PtBinMin:dPt:PtBinMax;
 Nbin=size(Ptbin,2);
@@ -39,7 +40,13 @@ for i=1:Nbin
     KtStd(i)=std(KtBinList{i});
 end
 errorbar(Ptbin,KtMean,KtStd)
-scatter(Ptbin,KtMean);
+% scatter(Ptbin,KtMean);
+% scatter(Ptlist,Ktlist)
+xlim([0,7])
+hold on
+[ KappaTilde, PTilde, ~, ~ ] = VirialUnitarity(  2, 7,200 , 3 );
+plot(PTilde,KappaTilde);
+hold off
 
 % %The hope is to use this function as an easy way to do online fitting for
 % %EoS data

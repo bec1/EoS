@@ -98,41 +98,41 @@ Ptsel(abs(Zsel)<kmin*Ztf)=[];
 Zsel(abs(Zsel)<kmin*Ztf)=[];
 
 %Plot nvsz with TF fitting
-% h=figure();
-% subplot(3,2,1);
-% scatter(z,n);
-% hold on
-% plot(z,ntf);
-% hold off
-% xlabel('z (pixel)');
-% ylabel('n (m^{-3})');
-% title('n vs z')
-% %Plot n vs V
-% subplot(3,2,2);
-% scatter(Vsort/hh,nsort,'filled');
-% xlabel('V (Hz)');
-% ylabel('n (m^{-3})');
-% title('n vs V');
-% %Plot Pt vs V
-% subplot(3,2,3);
-% scatter(Vsort/hh,Pt,'filled');
-% ylim([0,5])
-% xlabel('V (Hz)');
-% ylabel('P/P_0 (m^{-3})');
-% title('P/P_0 vs V');
-% %Plot Kt vs V
-% subplot(3,2,4);
-% scatter(Vsort/hh,Kt,'filled');
-% ylim([0,5])
-% xlabel('V (Hz)');
-% ylabel('\kappa/\kappa_0');
-% title('\kappa/\kappa_0 vs V');
-% %Plot Kt vs Pt
-% subplot(3,2,5);
-% scatter(Ptsel,Ktsel,'filled');
-% ylim([0,5]);xlim([0,5]);
-% xlabel('P/O_0');
-% ylabel('\kappa/\kappa_0');
-% title('EoS');
+h=figure();
+subplot(3,2,1);
+scatter(z,n);
+hold on
+plot(z,ntf);
+hold off
+xlabel('z (pixel)');
+ylabel('n (m^{-3})');
+title('n vs z')
+%Plot n vs V
+subplot(3,2,2);
+scatter(Vsort/hh,nsort,'filled');
+xlabel('V (Hz)');
+ylabel('n (m^{-3})');
+title('n vs V');
+%Plot Pt vs V
+subplot(3,2,3);
+scatter(Vsort/hh,Pt,'filled');
+ylim([0,5])
+xlabel('V (Hz)');
+ylabel('P/P_0 (m^{-3})');
+title('P/P_0 vs V');
+%Plot Kt vs V
+subplot(3,2,4);
+scatter(Vsort/hh,Kt,'filled');
+ylim([0,5])
+xlabel('V (Hz)');
+ylabel('\kappa/\kappa_0');
+title('\kappa/\kappa_0 vs V');
+%Plot Kt vs Pt
+subplot(3,2,5);
+scatter(Ptsel,Ktsel,'filled');
+ylim([0,5]);xlim([0,5]);
+xlabel('P/P_0');
+ylabel('\kappa/\kappa_0');
+title('EoS');
 end
 
