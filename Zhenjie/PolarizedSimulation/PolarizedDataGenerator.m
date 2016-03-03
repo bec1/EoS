@@ -10,8 +10,8 @@
 %% Input parameters
 
 % Select T/TF and density in center of trap
-TTilde = 0.1;
-n0 = 3*10^(14); % in 1/m^3
+TTilde = 0.05;
+n0 = 60*10^(14); % in 1/m^3
 
 % Select axial trapping frequency
 omega_y = 2*pi * 23.9;
@@ -70,7 +70,7 @@ KappaTilde = (6*pi^2)^(2/3)/(6*pi) * ...
     (-PolyLogFrac(1/2,-Z_simulated)./(-PolyLogFrac(3/2,-Z_simulated)).^(1/3));
 
 %% add gaussian noise on density distribution
-n_simulated_noise = awgn(n_simulated,25,'measured');
+n_simulated_noise = awgn(n_simulated,30,'measured');
 
 figure(2)
 plot(y_vec_micron,n_simulated_noise)
@@ -81,8 +81,9 @@ save('polarized_simulated_T0_1_noise_hires.mat','n_simulated','y_vec',...
     'n_simulated_noise','PTilde','KappaTilde')
 
 %%Generate 20 noisy data dets
-N=20;
+N=4;
 n_simulated_noise_list=cell(N,1);
 for i=1:N
-    n_simulated_noise_list{i}=awgn(n_simulated,25,'measured');
+    n_simulated_noise_list{i}=awgn(n_simulated,30,'measured');
 end
+n_simulated_noise_list_multiT=[n_simulated_noise_list_multiT;n_simulated_noise_list];

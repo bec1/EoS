@@ -1,4 +1,4 @@
-function [ KappaTilde, PTilde, Z_vec ] = IdealFermiEOS( PTildeMin, PTildeMax, LogPoints )
+function [ KappaTilde, PTilde, TTilde, Z_vec ] = IdealFermiEOS( PTildeMin, PTildeMax, LogPoints )
 %IdealFermiEOS This function computes the EOS of the Ideal fermi gas
 %   The input parameter is the renormalized pressure which defines the range for
 %   equation of state. 
@@ -19,12 +19,14 @@ PTildeAll = 10*pi/(6*pi^2)^(2/3) * ...
 KappaTildeAll = (6*pi^2)^(2/3)/(6*pi) * ...
     (-PolyLogFrac(1/2,-Z_vec)./(-PolyLogFrac(3/2,-Z_vec)).^(1/3));
 
+TTildeAll = (4*pi)./(6*pi^2*(-PolyLogFrac(3/2,-Z_vec))).^(2/3);
+
 %% Select EOS data for a certain regime defined by PTildeMax and PTildeMin
 [diff1,MaxSelectIndex] = min(abs(PTildeAll - PTildeMin));
 [diff2,MinSelectIndex] = min(abs(PTildeAll - PTildeMax));
 
 PTilde = PTildeAll(MinSelectIndex:MaxSelectIndex); 
 KappaTilde = KappaTildeAll(MinSelectIndex:MaxSelectIndex);
-
+TTilde = TTildeAll(MinSelectIndex:MaxSelectIndex);
 end
 
