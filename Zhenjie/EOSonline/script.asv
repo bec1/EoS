@@ -36,9 +36,8 @@ TTildetrap=interp1(PtTable,TtTable,Ptrap);
 EFtrap=hbar^2/(2*mli)*(6*pi^2*ntrap).^(2/3);
 
 Ttrap=TTildetrap.*EFtrap;
-scatter(Ztrap,TTildetrap)
-xlabel('Z(um)');
-ylabel('T/T_F');
+
+
 scatter(Ztrap,Ttrap/hh)
 ylim([0,1000]);
 xlabel('Z(um)');ylabel('k_BT(Hz)')
@@ -48,14 +47,6 @@ OUTP = LoSReconstructionTop('02-23-2016_21_11_01_top','plot',{1});
 map=OUTP.od_r
 imagesc(map)
 caxis([0,0.03])
-map(map<0)=0;
 TTildeMap=0.1*0.015^(2/3)./(map.^(2/3));
-
-TTildeMap(map==0)=nan;
-TTildeMap(1:40,:)=nan;
-TTildeMap(290:351,:)=nan;
 imagesc(TTildeMap);
-colormap('jet')
-caxis([0.1,0.5])
-h=colorbar();
-ylabel(h,'T/T_F')
+caxis([0,0.8])
