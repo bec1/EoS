@@ -1,4 +1,4 @@
-function [n,z] = GenNvsZ( Img,ROI1,ROI2,pixelsize,z0,ellipticity )
+function [n,z] = GenNvsZ( Img,ROI1,ROI2,pixelsize,z0,ellipticity,varargin)
 %GENNVSZ Summary of this function goes here
 %This function returns a normalized density n as a function of z, z=0 is
 %the center of the axial trapping potential, which should be provided by
@@ -10,17 +10,36 @@ function [n,z] = GenNvsZ( Img,ROI1,ROI2,pixelsize,z0,ellipticity )
 %pixelisze is the length of one pixel on the atom
 %z0 is the center of the cloud.
 
+ShowOutline=false;
+
+for i =1:length(varargin)
+    if ischar(varargin{i})
+    switch varargin{i}
+        case 'ShowOutline'
+            ShowOutline=varargin{i+1};    
+        otherwise        
+    end
+    end
+end
+
+
 [x1,x2,~,~,Yt,p1,p2 ]=CylinderOutline( Img,ROI2 );
 x1=round(x1);x2=round(x2);
-h=figure;
-imagesc(Img);
-%check if the outline is good
-hold on
-plot(x1,Yt,'r.','MarkerSize',5);
-plot(x2,Yt,'r.','MarkerSize',5);
-caxis([0,45]);
-% questdlg('I am just giving you some time to check the out line');
-close(h)
+
+% check if ShowOutline is asked
+if ShowOutline
+    h=figure;
+    imagesc(Img);
+    %check if the outline is good
+    hold on
+    plot(x1,Yt,'r.','MarkerSize',5);
+    plot(x2,Yt,'r.','MarkerSize',5);
+    caxis([0,45]);
+    questdlg('I am just giving you some time to check the out line, press any key to continue');
+    pause();
+    close(h)
+end
+
 %check end
 Y=ROI1(2):ROI1(4);
 [n,Z] = GetnvsZ( Img,x1,x2,Y,pixelsize,ellipticity);

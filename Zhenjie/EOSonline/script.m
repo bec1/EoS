@@ -1,17 +1,42 @@
-filename='J:\Elder Backup Raw Images\2016\2016-02\2016-02-23\02-23-2016_21_11_01_top.fits';
-[Pt,Kt,nsort,Vsort,Zsort,Ptsel,Ktsel]=EOS_Online( filename );
+%%
+addpath('../Library');
+warning('off','all');
+%%
+filename='/Users/Zhenjie/Data/2016-03-02/03-03-2016_01_50_32_top.fits';
+[Pt,Kt,nsort,Vsort,Zsort,Ptsel,Ktsel,EF]=EOS_Online( filename ,'ROI1',[215,25,312,402],...
+    'ROI2',[209,187,335,243],'ShowOutline',0,'TailRange',[65,335],'KappaMode',1,'PolyOrder',1,'VrangeFactor',5,'IfHalf',1,'kmax',0.7,'kmin',0.15);
 
-% scatter(Ptsel,Ktsel);
-% hold on
-% xlim([0,6])
-% [ KappaTilde, PTilde, ~, ~ ] = VirialUnitarity(  2, 7,200 , 3 );
-% ylim([0,4])
-% plot(PTilde,KappaTilde);
-% hold off
-% 
-% Kappa=GetKappavsV(nsort,Vsort);
-% 
-
+d=figure();
+scatter(Ptsel,Ktsel);
+hold on
+xlim([0,6])
+[ KappaTilde, PTilde, ~, ~ ] = VirialUnitarity();
+ylim([0,4])
+plot(PTilde,KappaTilde);
+hold off
+%%
+funfit=EF./exp(-3e29*Vsort);
+p=polyfit(Vsort,funfit,11);
+fun=polyval(p,Vsort).*exp(-3e29*Vsort);
+plot(Vsort,EF,'r.');
+hold on
+plot(Vsort,fun);
+hold off
+%%
+scatter(Pt,Kt);
+hold on
+xlim([0,6])
+[ KappaTilde, PTilde, ~, ~ ] = VirialUnitarity(  2, 7,2000 , 3 );
+ylim([0,4])
+plot(PTilde,KappaTilde);
+hold off
+%%
+mli=9.988346*10^-27;  %kg
+hbar=1.0545718*10^(-34); %SI
+hh=2*pi*hbar;%SI Planck constant
+omega=23.9*2*pi; %in rad/s
+pixellength=1.44*10^-6; %in m
+sigma0=0.215*10^-12/2; %in m^2
 %%
 mli=9.988346*10^-27;  %kg
 hbar=1.0545718*10^(-34); %SI
@@ -43,9 +68,9 @@ scatter(Ztrap,Ttrap/hh)
 ylim([0,1000]);
 xlabel('Z(um)');ylabel('k_BT(Hz)')
 %%
-addpath('C:\Users\Elder\Documents\GitHub\Matlab-Functions-Library\Final')
+addpath('/Users/Zhenjie/Github/Matlab-Functions-Library/Final')
 OUTP = LoSReconstructionTop('02-23-2016_21_11_01_top','plot',{1});
-map=OUTP.od_r
+map=OUTP.od_r;
 imagesc(map)
 caxis([0,0.03])
 map(map<0)=0;

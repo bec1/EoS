@@ -1,21 +1,27 @@
 % FileName='\\Elder-pc\j\Elder Backup Raw Images\2016\2016-02\2016-02-23\02-23-2016_21_04_34_top.fits';
 warning('off','all')
-Folder='\\Elder-pc\j\Elder Backup Raw Images\2016\2016-02\2016-02-23\';
+Folder='/Users/Zhenjie/Data/2016-03-02/';
 N=length(list);
 Ptlist=[];
 Ktlist=[];
 ROI1=[215,25,312,402];
 ROI2=[209,187,335,243];
 for i=1:N
-    [Pt,Kt,nsort,Vsort,Zsort,Ptsel,Ktsel]=EOS_Online( [Folder,list{i},'.fits'],ROI1,ROI2,[65,335] );
+    [Pt,Kt,nsort,Vsort,Zsort,Ptsel,Ktsel,~]=EOS_Online( [Folder,list{i},'.fits'],'ROI1',[215,25,312,402],...
+    'ROI2',[209,187,335,243],'ShowOutline',0,'TailRange',[65,335],'KappaMode',2,'PolyOrder',10,'VrangeFactor',4,'IfHalf',1,'ShowPlot',0 ,'kmin',0.2,'kmax',0.8);
     Ptlist=[Ptlist;Ptsel];
     Ktlist=[Ktlist;Ktsel];
 end
 scatter(Ptlist,Ktlist)
+xlim([0,6])
+hold on
+[ KappaTilde, PTilde, ~, ~ ] = VirialUnitarity(  );
+plot(PTilde,KappaTilde);
+hold off
 
 %%
 PtBinMin=0;
-PtBinMax=7;
+PtBinMax=5;
 dPt=0.02;
 Ptbin=PtBinMin:dPt:PtBinMax;
 Nbin=size(Ptbin,2);
@@ -44,10 +50,12 @@ errorbar(Ptbin,KtMean,KtStd)
 % scatter(Ptlist,Ktlist)
 xlim([0,7])
 hold on
-[ KappaTilde, PTilde, ~, ~ ] = VirialUnitarity(  2, 7,200 , 3 );
+[ KappaTilde, PTilde, ~, ~ ] = VirialUnitarity(  );
 plot(PTilde,KappaTilde);
 hold off
 
+
+%%
 % %The hope is to use this function as an easy way to do online fitting for
 % %EoS data
 % %FileName: the name of the file
