@@ -1,4 +1,4 @@
-function [Pt,Kt,nsort,Vsort,Zsort,Ptsel,Ktsel,EFsort] = EOS_Online( FileName,varargin )
+function [Pt,Kt,nsort,Vsort,Zsort,Ptsel,Ktsel,EFsort] = EOS_Online( Input,varargin )
 %The hope is to use this function as an easy way to do online fitting for
 %EoS data
 %FileName: the name of the file
@@ -20,9 +20,10 @@ BGSubtraction=0;
 ifsmooth=0;
 kmin=0.15;
 kmax=1.1;
-Cutoff=2;
+CutOff=2;
 IfHalf=0;
 FinalPlot=1;
+fudge=2.62;
 
 for i =1:length(varargin)
     if ischar(varargin{i})
@@ -60,6 +61,12 @@ for i =1:length(varargin)
             PolyOrder=varargin{i+1};
         case 'IfHalf'
             IfHalf=varargin{i+1};
+        case 'Fudge'
+            fudge=varargin{i+1};
+        case 'CutOff'
+            CutOff=varargin{i+1};
+        case 'Points'
+            Points=varargin{i+1};
         end
     end
 end
@@ -72,14 +79,18 @@ omega=23.9*2*pi; %in rad/s
 pixellength=1.44*10^-6; %in m
 sigma0=0.215*10^-12/2; %in m^2
 Nsat=330; %P63I Camera
-fudge=2.62;
+
 
 %Read the image
-Img=fitsreadRL(FileName);
-Nimg=AtomNumber( Img,pixellength^2,sigma0, Nsat);
-Nimg(isnan(Nimg))=0;
-Nimg(Nimg==inf)=0;
-Nimg(Nimg==-inf)=0;
+if ischar(Input)
+    Img=fitsreadRL(Input);
+    Nimg=AtomNumber( Img,pixellength^2,sigma0, Nsat);
+    Nimg(isnan(Nimg))=0;
+    Nimg(Nimg==inf)=0;
+    Nimg(Nimg==-inf)=0;
+else
+    Nimg=Input;
+end
 %Get the ROI1
 
 if CropROI1
@@ -133,6 +144,11 @@ Z=(z-z0)*pixellength;
 V=0.5*mli*omega^2*Z.^2;
 Vtf=0.5*mli*omega^2*Ztf.^2;
 
+%excute the cutt off
+Zcut=Ztf*CutOff;
+n(abs(Z)>Zcut)=[];
+V(abs(Z)>Zcut)=[];
+Z(abs(Z)>Zcut)=[];
 
 %sort Z,n with V
 [Vsort,B]=sort(V);
@@ -191,7 +207,7 @@ if FinalPlot
     scatter(Vsort/hh,EFsort/hh,'filled');
     xlabel('V (Hz)');
     ylabel('E_F (Hz)');
-    title('n vs V');
+    title('EF vs V');
     %Plot Pt vs V
     subplot(3,2,3);
     scatter(Vsort/hh,Pt,'filled');

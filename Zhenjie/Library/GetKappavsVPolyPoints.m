@@ -5,7 +5,7 @@ function [ Kappat ] = GetKappavsVPolyPoints( n,V,dk,order,varargin )
 ifsmoothing=false;
 
 for i =1:length(varargin)
-    if ischar(varargin(i))
+    if ischar(varargin{i})
         switch varargin{i}
             case 'Smooth'
                 ifsmoothing=true;

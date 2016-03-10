@@ -2,9 +2,9 @@
 addpath('../Library');
 warning('off','all');
 %%
-filename='/Users/Zhenjie/Data/2016-03-02/03-03-2016_01_50_32_top.fits';
-[Pt,Kt,nsort,Vsort,Zsort,Ptsel,Ktsel,EF]=EOS_Online( filename ,'ROI1',[215,25,312,402],...
-    'ROI2',[209,187,335,243],'ShowOutline',0,'TailRange',[65,335],'KappaMode',1,'PolyOrder',1,'VrangeFactor',5,'IfHalf',1,'kmax',0.7,'kmin',0.15);
+filename='/Users/Zhenjie/Data/2016-03-02/03-03-2016_01_52_16_top.fits';
+[Pt,Kt,nsort,Vsort,Zsort,Ptsel,Ktsel,EF]=EOS_Online( filename ,'ROI1',[215,25,312,430],...
+    'ROI2',[209,187,335,243],'ShowOutline',1,'TailRange',[65,360],'KappaMode',2,'PolyOrder',10,'VrangeFactor',5,'IfHalf',1,'kmax',0.9,'kmin',0.15);
 
 d=figure();
 scatter(Ptsel,Ktsel);
