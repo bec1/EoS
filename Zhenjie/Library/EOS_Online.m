@@ -148,6 +148,8 @@ Vtf=0.5*mli*omega^2*Ztf.^2;
 Zcut=Ztf*CutOff;
 n(abs(Z)>Zcut)=[];
 V(abs(Z)>Zcut)=[];
+z(abs(Z)>Zcut)=[];
+ntf(abs(Z)>Zcut)=[];
 Z(abs(Z)>Zcut)=[];
 
 %sort Z,n with V
