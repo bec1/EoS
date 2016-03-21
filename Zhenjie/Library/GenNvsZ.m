@@ -34,7 +34,7 @@ if ShowOutline
     hold on
     plot(x1,Yt,'r.','MarkerSize',5);
     plot(x2,Yt,'r.','MarkerSize',5);
-    caxis([0,45]);
+    caxis([-10,45]);
     questdlg('I am just giving you some time to check the out line, press any key to continue');
     pause();
     close(h)

@@ -1,10 +1,13 @@
 %%
 addpath('../Library');
+load('BGimg0223');
 warning('off','all');
 %%
-filename='/Users/Zhenjie/Data/2016-02-23/02-23-2016_21_06_22_top.fits';
-[Pt,Kt,nsort,Vsort,Zsort,Ptsel,Ktsel,EF]=EOS_Online( filename ,'ROI1',[215,25,312,430],...
-    'ROI2',[209,187,335,243],'ShowOutline',1,'TailRange',[65,360],'KappaMode',2,'PolyOrder',10,'VrangeFactor',5,'IfHalf',0,'kmax',0.9,'kmin',0.15);
+filename='/Users/Zhenjie/Data/2016-02-23/02-23-2016_21_07_13_top.fits';
+[Pt,Kt,nsort,Vsort,Zsort,Ptsel,Ktsel,EF,P]=EOS_Online( filename ,'ROI1',[215,25,312,402],...
+    'ROI2',[209,187,335,243],'ShowOutline',1,'TailRange',[85,325],'KappaMode',5,'PolyOrder',2,'Points',2,'VrangeFactor',5,'IfHalf',0,...
+    'CutOff',inf,'kmax',1.1,'kmin',0.15,'BGSubtraction',BGimg,'ShowTailor',1,'SelectByPortion',1,...
+    'IfTailTailor',1,'IfFitExpTail',1,'SM',2,'IfBin',1,'BinGridSize',80,'IfSuperSampling',1);
 
 d=figure();
 scatter(Ptsel,Ktsel);

@@ -27,8 +27,7 @@ end
 % ns=smooth(n);
 %Get EF
 hbar=1.0545718*10^(-34);
-kF=real((6*pi^2*ns).^(1/3));
-EF=hbar^2*kF.^2/(2*mli);
+EF=real(hbar^2*(6*pi^2*ns).^(2/3)/(2*mli));
 hh=hbar*2*pi;
 
 if ifsmoothing
