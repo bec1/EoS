@@ -10,8 +10,8 @@
 %% Input parameters
 
 % Select T/TF and density in center of trap
-TTilde = 0.05;
-n0 = 60*10^(14); % in 1/m^3
+TTilde = 0.1;
+n0 = 10*10^(14); % in 1/m^3
 
 % Select axial trapping frequency
 omega_y = 2*pi * 23.9;
@@ -28,7 +28,7 @@ mLi = 9.9883414*10^(-27);
 
 %% Generate EOS data for a large regime
 Xstart = -5;
-Xstop = 5;
+Xstop = 500;
 X_vec = linspace(Xstart,Xstop, 5000);
 Z_vec = exp(X_vec);
 

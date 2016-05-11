@@ -18,7 +18,10 @@ for i=1:N
     else
         Out(i)=(y(k2)-y(k1))/(x(k2)-x(k1));
     end
-    Outerr(i)=sqrt(((ystd(k2)-ystd(k1))/(y(k2)-y(k1)))^2+((xstd(k2)-xstd(k1))/(x(k2)-x(k1)))^2)*Out(i);
+    %Outerr(i)=sqrt(((ystd(k2)+ystd(k1))/(y(k2)-y(k1)))^2+((xstd(k2)+xstd(k1))/(x(k2)-x(k1)))^2)*Out(i);
+    deltay=sqrt(ystd(k2)^2+ystd(k1)^2);
+    deltax=sqrt(xstd(k2)^2+xstd(k1)^2);
+    Outerr(i)=sqrt((deltay/(x(k2)-x(k1)))^2+(deltax*(y(k2)-y(k1))/(x(k2)-x(k1))^2)^2);
 end
 
 end
