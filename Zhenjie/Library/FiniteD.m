@@ -1,4 +1,4 @@
-function [Out,Outerr] = FiniteD( x,xstd,y,ystd,SD )
+function [Out,Outerr] = FiniteD( x,xstd,y,ystd,SD,varargin )
 %FINITED Summary of this function goes here
 %   Detailed explanation goes here
 N=length(x);

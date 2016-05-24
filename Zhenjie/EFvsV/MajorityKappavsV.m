@@ -14,7 +14,7 @@ filefolder_Polarized='/Users/Zhenjie/Data/2016-05-16/';
 fileS1='05-16-2016_19_44_43_top';
 [~,~,~,VsortS1,~,~,~,EFS1]=EOS_Online( [filefolder_Polarized,fileS1,'.fits'] ,'ROI1',[157,50,390,450],...
     'ROI2',[157,220,390,280],'TailRange',[90,410],'ShowOutline',1,'KappaMode',2,'PolyOrder',10,'VrangeFactor',5,'IfHalf',0,'kmax',0.9,'kmin',0.05,...
-    'Fudge',2.8,'BGSubtraction',0,'IfFitExpTail',1,'Nsat',330,'ShowPlot',1,'CutOff',inf,'IfHalf',0);
+    'Fudge',2.8,'BGSubtraction',0,'IfFitExpTail',1,'Nsat',330,'ShowPlot',1,'CutOff',inf,'IfHalf',1);
 %%
 filefolder_Polarized='/Users/Zhenjie/Data/2016-05-16/';
 fileS1List={'05-16-2016_19_12_21_top';'05-16-2016_19_10_37_top';'05-16-2016_19_08_51_top';'05-16-2016_19_07_07_top';'05-16-2016_19_05_21_top';'05-16-2016_19_03_37_top';'05-16-2016_19_01_51_top';'05-16-2016_18_57_27_top';'05-16-2016_18_54_42_top';'05-16-2016_18_52_57_top';'05-16-2016_18_48_55_top';'05-16-2016_18_47_10_top';'05-16-2016_18_44_49_top';'05-16-2016_18_43_05_top'};
@@ -23,7 +23,7 @@ EFS1List={};
 for i=1:length(fileS1List)
     [~,~,~,VsortS1,~,~,~,EFS1]=EOS_Online( [filefolder_Polarized,fileS1List{i},'.fits'] ,'ROI1',[157,50,390,450],...
     'ROI2',[157,220,390,320],'TailRange',[90,410],'ShowOutline',0,'KappaMode',2,'PolyOrder',10,'VrangeFactor',5,'IfHalf',0,'kmax',0.9,'kmin',0.15,...
-    'Fudge',2.8,'BGSubtraction',0,'IfFitExpTail',1,'Nsat',330,'ShowPlot',0,'CutOff',inf);
+    'Fudge',2.8,'BGSubtraction',0,'IfFitExpTail',1,'Nsat',330,'ShowPlot',0,'CutOff',inf,'IfHalf',1);
     VsortS1List=[VsortS1List;VsortS1];
     EFS1List=[EFS1List;EFS1];
 end

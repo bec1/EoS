@@ -14,11 +14,11 @@ warning('off','all');
 filefolder_Unitary='/Users/Zhenjie/Data/2016-02-23/';
 
 %%
-file1='02-23-2016_21_05_24_top';
+file1='02-23-2016_21_04_34_top';
 [Pt,Kt,nsort,Vsort,Zsort,Ptsel,Ktsel,EF]=EOS_Online( [filefolder_Unitary,file1,'.fits'],'ROI1',[215,25,312,402],...
-    'ROI2',[209,187,335,243],'ShowOutline',0,'TailRange',[85,325],'KappaMode',2,'PolyOrder',10,'VrangeFactor',5,'IfHalf',0,'kmax',1.1,'kmin',0.1,'Points',20,...
-    'Fudge',2.8,'smooth',1,'CutOff',inf,'ShowPlot',0,'ShowOutline',0,'BGSubtraction',BGimg,'SelectByPortion',0,'Portion',0.1,...
-    'IfTailTailor',1,'IfFitExpTail',1,'ExpTailPortion',0.06);
+    'ROI2',[209,187,335,243],'ShowOutline',0,'TailRange',[85,325],'KappaMode',5,'PolyOrder',10,'VrangeFactor',5,'IfHalf',0,'kmax',1.1,'kmin',0.1,'Points',20,...
+    'Fudge',2.8,'smooth',0,'CutOff',inf,'ShowPlot',1,'ShowOutline',0,'BGSubtraction',BGimg,'SelectByPortion',0,'Portion',0.1,'SM',4,...
+    'IfTailTailor',1,'IfFitExpTail',1,'ExpTailPortion',0.06,'IfBin',1,'BinGridSize',100);
 %%
 %%
 filefolder_Unitary='/Users/Zhenjie/Data/2016-02-23/';
@@ -55,9 +55,9 @@ xlabel('V (Hz)');ylabel('EF (Hz)');
 title('Majority, EF vs V');
 
 %%
-Nbin=160;
+Nbin=80;
 %Vgrid=linspace(0,sqrt(max(VsortS1)),Nbin+1).^2;
-Vgrid=linspace(0,1.2e4,Nbin+1);
+Vgrid=linspace(0,0.6e4,Nbin+1);
 
 [VUPlot,EFUPlot,VUPlotErr,EFUPlotErr]=BinGrid(VsortU,EFU,Vgrid,2);
 
@@ -71,10 +71,10 @@ figure1 = figure;
 axes1 = axes('Parent',figure1);
 plot(VUPlot/1e3,EFUPlot/1e3,'r','linewidth',2)
 xlabel('V (kHz)');ylabel('EF (kHz)');
-title('Majority, EF vs V, Binned');
+title('Unitary, EF vs V, Binned');
 % Set the remaining axes properties
-ylim([-0.5,8]);xlim([0,12]);
-set(axes1,'XTick',[0 4 8 12],'YTick',[0 2 4 6 8]);
+ylim([-0.5,8]);xlim([0,6]);
+set(axes1,'XTick',[0 2 4 6],'YTick',[0 2 4 6 8]);
 savefig(figure1,'UnitaryEFvsV.fig');
 print(figure1,'UnitaryEFvsV','-dpdf');
 

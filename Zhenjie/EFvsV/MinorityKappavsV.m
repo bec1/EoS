@@ -131,8 +131,8 @@ end
 %%
 plot(VmS2List{1},KappaS2List{1},'r.','markersize',10);
 hold on
-plot(VmS2List{2},KappaS2List{2},'b.','markersize',10);
-plot(VmS2List{3},KappaS2List{3},'g.','markersize',10);
+plot(VmS2List{4},KappaS2List{4},'b.','markersize',10);
+plot(VmS2List{7},KappaS2List{7},'g.','markersize',10);
 xlim([-3000,3000])
 %%
 VmS2_vector=[];
@@ -162,7 +162,7 @@ end
 
 %%
 Slopelist=[];
-fittingrange=-3000;
+fittingrange=-3250;
 for i=1:length(VmList)
     Vm=VmList{i};
     EF=EFS2List{i}/hh;
@@ -180,7 +180,7 @@ std(Slopelist)/sqrt(length(Slopelist)-1)
 
 Nbin=100;
 %Vgrid=linspace(0,sqrt(max(VsortS1)),Nbin+1).^2;
-Vgrid=linspace(0,12e3,Nbin+1);
+Vgrid=linspace(0,5e3,Nbin+1);
 
 
 [VS2Plot,EFS2Plot,VS2PlotErr,EFS2PlotErr]=BinGrid(VsortS2,EFS2,Vgrid,0);
@@ -191,8 +191,8 @@ plot(VS2Plot/1e3,EFS2Plot/1e3,'r','linewidth',2)
 xlabel('V (kHz)');ylabel('EF (kHz)');
 title('Majority, EF vs V, Binned');
 % Set the remaining axes properties
-set(axes1,'XTick',[0 4 8 12],'YTick',[0 2 4 6 8]);
-ylim([-0.5,8]);xlim([0,12]);
+set(axes1,'XTick',[0 1 2 3 4],'YTick',[0 2 4 6 8]);
+ylim([-0.5,8]);xlim([0,4]);
 savefig(figure1,'MinorityEFvsV.fig');
 print(figure1,'MinorityEFvsV','-dpdf');
 
@@ -200,9 +200,10 @@ print(figure1,'MinorityEFvsV','-dpdf');
 figure1 = figure;
 axes1 = axes('Parent',figure1);
 errorbar1derr_Z(VS2Bin/1e3,kappa2T,kappa2Terr,'LineStyle','none','Markersize',15,'Color','b');
-xlim([0,5]);
+line([0,4],[1.1,1.1],'color','r','linestyle','--','linewidth',1)
+xlim([0,4]);ylim([-0.2,1.4])
 xlabel('V (kHz)');ylabel('KappaTilde');
-set(axes1,'XTick',[0 0.5 1 1.5 2 2.5 3 3.5 4 4.5 5],'YTick',[0 0.5 1]);
+set(axes1,'XTick',[0 1 2 3 4],'YTick',[0 0.5 1]);
 savefig(figure1,'MinorityKappavsV.fig');
 print(figure1,'MinorityKappavsV','-dpdf');
 %% plot the kappa vs T/T_F
@@ -232,5 +233,5 @@ n2=EFS2exp.^1.5;
 p12=n2./(n1+n2);
 scatter(VS2Bin,p12)
 
-Tticks=interp1(VS2Bin,TTilde_minorirty,[0 0.5 1 1.5 2 2.5 3 3.5 4 4.5 5]*1e3,'spline','extrap')
-pticks=interp1(VS2Bin,p12,[0 0.5 1 1.5 2 2.5 3 3.5 4 4.5]*1e3,'spline','extrap')
+Tticks=interp1(VS2Bin,TTilde_minorirty,[0 1 2 3 4]*1e3,'spline','extrap')
+pticks=interp1(VS2Bin,p12,[0 1 2 3 4]*1e3,'spline','extrap')
