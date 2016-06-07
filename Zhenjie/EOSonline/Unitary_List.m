@@ -14,11 +14,11 @@ ROI1=[215,25,312,402];
 ROI2=[209,187,335,243];
 for i=1:N
     [Pt,Kt,nsort,Vsort,Zsort,Ptsel,Ktsel,~]=EOS_Online( [Folder,list{i},'.fits'],'ROI1',[215,25,312,402],...
-    'ROI2',[209,187,335,243],'ShowOutline',0,'TailRange',[85,350],'KappaMode',0,'PolyOrder',2,...
-    'VrangeFactor',5,'IfHalf',0,'kmax',1.1,'kmin',0.3,'Points',10,...
-    'Fudge',2.62,'smooth',0,'CutOff',inf,'ShowPlot',0,'ShowOutline',0,'BGSubtraction',BGimg,...
+    'ROI2',[209,187,335,243],'ShowOutline',0,'TailRange',[85,325],'KappaMode',2,'PolyOrder',10,...
+    'VrangeFactor',5,'IfHalf',0,'kmax',1.1,'kmin',0.05,'Points',1,...
+    'Fudge',2.62,'smooth',1,'CutOff',inf,'ShowPlot',0,'ShowOutline',0,'BGSubtraction',BGimg,...
     'SelectByPortion',0,'Portion',0.1,'IfTailTailor',1,'IfFitExpTail',0,'ExpTailPortion',0.06,...
-    'SM',3,'IfBin',0,'BinGridSize',120,'IfSuperSampling',0);
+    'SM',4,'IfBin',0,'BinGridSize',100,'IfSuperSampling',1);
     Ptlist=[Ptlist;Ptsel];
     Ktlist=[Ktlist;Ktsel];
     disp(i);
@@ -32,7 +32,7 @@ hold on
 plot(PTilde,KappaTilde,'LineWidth',3,'color','b');
 hold off
 %%
-[PtlistF,KtlistF]=ClusterFilter(Ptlist,Ktlist,0.1,0.1,0);
+[PtlistF,KtlistF]=ClusterFilter(Ptlist,Ktlist,0.1,0.1,10);
 scatter(PtlistF,KtlistF,'r.')
 xlim([0,6])
 hold on
@@ -41,49 +41,49 @@ plot(PTilde,KappaTilde,'color','b','linewidth',3);
 xlabel('P/P_0');ylabel('\kappa/\kappa_0');
 hold off
 %%
-% PtBinMin=0.3;
-% PtBinMax=7;
-% dPt=0.02;
-% Ptbin=PtBinMin:dPt:PtBinMax;
-% Nbin=size(Ptbin,2);
-% M=length(KtlistF);
-% KtBinList=cell(1,Nbin);
-% KtMean=zeros(1,Nbin);
-% KtStd=zeros(1,Nbin);
-% for i=1:Nbin
-%     KtBinList{i}=[];
-% end
-% 
-% for i=1:M
-%     K=round((PtlistF(i)-PtBinMin)/dPt+1);
-%     if K<=Nbin && K>=1
-%         temp=KtBinList{K};
-%         KtBinList{K}=[temp,KtlistF(i)];
-%     end
-% end
-% 
-% for i=1:Nbin
-%     KtMean(i)=mean(KtBinList{i});
-%     KtStd(i)=std(KtBinList{i})/sqrt(length(KtBinList{i}));
-%     if length(KtBinList{i})<3
-%         KtMean(i)=NaN;
-%         KtStd(i)=NaN;
-%     end
-% end
-% %%
-% errorbar(Ptbin,KtMean,KtStd,'MarkerFaceColor',[1 1 0],'Marker','diamond',...
-%     'LineStyle','none',...
-%     'Color',[1 0 0],'DisplayName','EoS')
-% % scatter(Ptbin,KtMean);
-% % scatter(Ptlist,Ktlist)
-% xlim([0,7])
-% hold on
-% [ KappaTilde, PTilde, ~, ~ ] = VirialUnitarity(  );
-% plot(PTilde,KappaTilde,'color','b','linewidth',3,'DisplayName','Virial Expansion');
-% legend('show')
-% xlabel('P/P_0');ylabel('\kappa/\kappa_0');
-% hold off
-% 
+PtBinMin=0.3;
+PtBinMax=7;
+dPt=0.02;
+Ptbin=PtBinMin:dPt:PtBinMax;
+Nbin=size(Ptbin,2);
+M=length(KtlistF);
+KtBinList=cell(1,Nbin);
+KtMean=zeros(1,Nbin);
+KtStd=zeros(1,Nbin);
+for i=1:Nbin
+    KtBinList{i}=[];
+end
+
+for i=1:M
+    K=round((PtlistF(i)-PtBinMin)/dPt+1);
+    if K<=Nbin && K>=1
+        temp=KtBinList{K};
+        KtBinList{K}=[temp,KtlistF(i)];
+    end
+end
+
+for i=1:Nbin
+    KtMean(i)=mean(KtBinList{i});
+    KtStd(i)=std(KtBinList{i})/sqrt(length(KtBinList{i}));
+    if length(KtBinList{i})<3
+        KtMean(i)=NaN;
+        KtStd(i)=NaN;
+    end
+end
+%%
+errorbar(Ptbin,KtMean,KtStd,'MarkerFaceColor',[1 1 0],'Marker','diamond',...
+    'LineStyle','none',...
+    'Color',[1 0 0],'DisplayName','EoS')
+% scatter(Ptbin,KtMean);
+% scatter(Ptlist,Ktlist)
+xlim([0,7])
+hold on
+[ KappaTilde, PTilde, ~, ~ ] = VirialUnitarity(  );
+plot(PTilde,KappaTilde,'color','b','linewidth',3,'DisplayName','Virial Expansion');
+legend('show')
+xlabel('P/P_0');ylabel('\kappa/\kappa_0');
+hold off
+
 
 %%
 PtBinMin=0.3;
@@ -106,50 +106,36 @@ legend('show')
 xlabel('P/P_0');ylabel('\kappa/\kappa_0');
 hold off
 
-%% kappa vs T
-[ KappaTildeT_U, PTildeT_U, TTildeT_U, ~, ~] = ...
-    VirialUnitarity( );
-PtU=PtMean;
-KtU=KtMean;
-% the cutoff value for the pressure.
-Ptcutoff=4;
-Ttcutoff=interp1(PTildeT_U,TTildeT_U,Ptcutoff);
+%%
+%Try bin with Kt in high T
+Ks=1.5
+Mark1=KtlistF>Ks;
+Mark2=KtlistF<=Ks;
+PtBinMin=0.3;
+PtBinMax=5;
+N=100;
+thres=3;
+PtGrid=logspace(log(PtBinMin)/log(10),log(PtBinMax)/log(10),N);
+[ PtMean1,KtMean1,PtStd1,KtStd1 ] = BinGrid( PtlistF(Mark1),KtlistF(Mark1),PtGrid,10);
+KtGrid=linspace(0.3,Ks+1,40);
+[ KtMean2,PtInvMean2,KtStd1,PtInvStd2 ] = BinGrid( KtlistF(Mark2),1./PtlistF(Mark2),KtGrid,10);
+PtMean2=1./PtInvMean2;
 
-KtU(PtU>Ptcutoff)=[];
-PtU(PtU>Ptcutoff)=[];
-PtU(isnan(KtU))=[];
-KtU(isnan(KtU))=[];
-
-TtU=GetTTilde(PtU,KtU,Ttcutoff);
-p1=scatter(TtU,KtU,'DisplayName','Experiment Data Unitary');
+%%
+scatter(PtMean1,KtMean1);
+% scatter(Ptbin,KtMean);
+% scatter(Ptlist,Ktlist)
+xlim([0,7])
 hold on
-pbaspect([1 0.5 1])
-plot(TTildeT_U,KappaTildeT_U,'r','linewidth',3,'DisplayName','Virial Expansion 3rd order');
-xlabel('T/T_F');
-ylabel('\kappa/\kappa_0')
-title('\kappa/\kappa_0 vs T/T_F');
-xlim([0,1.5])
-p3=line([0.167,0.167],[0,3],'linewidth',1,'DisplayName','Tc=0.167');
-%scatter(Tt_pol,KtMean_Pol,'DisplayName','Simulated Polarize Gas')
-%plot(TTildeT_Pol,KappaTildeT_Pol,'DisplayName','Ideal Polarize Gas','linewidth',3)
-legend('show');
+scatter(PtMean2,KtMean2);
+[ KappaTilde, PTilde, ~, ~ ] = VirialUnitarity(  );
+plot(PTilde,KappaTilde,'color','b','linewidth',3,'DisplayName','Virial Expansion');
+legend('show')
+xlabel('P/P_0');ylabel('\kappa/\kappa_0');
 hold off
 %%
-%%Try to get C_V with P,Kappa and T
-
-Cvt_PKTU = GetCvTilde( PtU,KtU,TtU );
-Cvt_PKTU = Cvt_PKTU;
-scatter(TtU,Cvt_PKTU,'DisplayName','Experiment Data Unitary with Some Cheating');
-hold on
-CvTildeT_U=GetCvTilde( PTildeT_U,KappaTildeT_U,TTildeT_U );
-plot(TTildeT_U,CvTildeT_U,'DisplayName','Virial Expansion','linewidth',3);
-pbaspect([1 0.5 1])
-ylim([0,4]);xlim([0,1.5]);
-xlabel('T/T_F');
-ylabel('C_V/(k_B N)');
-%scatter(Tt_pol,CvTilde_Sim_Pol,'k*','DisplayName','Simulated Polarized Gas');
-%plot(TTildeT,CvTildeT_Pol,'DisplayName','Ideal Polarized Gas','LineWidth',3);
-title('C_V get from PTilde,kappaTilde,TTilde');
-line([0.167,0.167],[0,3],'linewidth',1,'DisplayName','Tc=0.167');
-legend('show');
-hold off
+x = 1:10;
+xe = 0.5*ones(size(x));
+y = sin(x);
+ye = std(y)*ones(size(x));
+H=errorbarxy(x,y,xe,ye,{'ko-', 'b', 'r'});

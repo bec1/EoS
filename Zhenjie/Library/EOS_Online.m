@@ -1,4 +1,4 @@
-function [Pt,Kt,nsort,Vsort,Zsort,Ptsel,Ktsel,EFsort,P] = EOS_Online( Input,varargin )
+function [Pt,Kt,nsort,Vsort,Zsort,Ptsel,Ktsel,EFsort,P,zcor] = EOS_Online( Input,varargin )
 %The hope is to use this function as an easy way to do online fitting for
 %EoS data
 %FileName: the name of the file
@@ -211,6 +211,10 @@ Z(abs(Z)>Zcut)=[];
 [Vsort,B]=sort(V);
 nsort=n(B);
 Zsort=Z(B);
+zsort=z(B);
+
+zcor.z=zsort;
+zcor.z0=z0;
 
 if IfHalf
     Vsort=Vsort(Zsort>0);

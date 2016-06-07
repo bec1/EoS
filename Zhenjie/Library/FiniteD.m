@@ -1,4 +1,4 @@
-function [Out,Outerr] = FiniteD( x,xstd,y,ystd,SD )
+function [Out,Outerr] = FiniteD( x,xstd,y,ystd,SD,varargin )
 %FINITED Summary of this function goes here
 %   Detailed explanation goes here
 N=length(x);
@@ -7,7 +7,7 @@ Outerr=Out;
 for i=1:N
     k1=max(1,i-SD);
     k2=min(N,i+SD);
-    Out(i)=(y(k2)-y(k1))/(x(k2)-x(k1));
+    %Out(i)=(y(k2)-y(k1))/(x(k2)-x(k1));
     if k2-k1>1
         k0=round((k1+k2)/2);
         X=[x(k1),x(k0),x(k2)];
