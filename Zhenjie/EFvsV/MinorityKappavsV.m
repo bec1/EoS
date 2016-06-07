@@ -17,7 +17,7 @@ EFS2List={};
 for i=1:length(fileS2List)
     [~,~,~,VsortS2,~,~,~,EFS2]=EOS_Online( [filefolder_Polarized,fileS2List{i},'.fits'] ,'ROI1',[157,50,390,450],...
     'ROI2',[157,220,390,280],'TailRange',[150,350],'ShowOutline',0,'KappaMode',2,'PolyOrder',10,'VrangeFactor',5,'IfHalf',0,'kmax',0.9,'kmin',0.15,...
-    'Fudge',2.8,'BGSubtraction',0,'IfFitExpTail',1,'Nsat',330,'ShowPlot',0,'CutOff',inf,'IfHalf',0);
+    'Fudge',3.0,'BGSubtraction',0,'IfFitExpTail',1,'Nsat',330,'ShowPlot',0,'CutOff',inf,'IfHalf',0);
     VsortS2List=[VsortS2List;VsortS2];
     EFS2List=[EFS2List;EFS2];
 end
