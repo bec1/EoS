@@ -121,7 +121,14 @@ if ischar(Input)
     Nimg(Nimg==inf)=0;
     Nimg(Nimg==-inf)=0;
 else
-    Nimg=Input;
+    if size(Input,3)==1
+        Nimg=Input;
+    else
+        Nimg=AtomNumber( Input,pixellength^2,sigma0, Nsat);
+        Nimg(isnan(Nimg))=0;
+        Nimg(Nimg==inf)=0;
+        Nimg(Nimg==-inf)=0;
+    end
 end
 %Get the ROI1
 
