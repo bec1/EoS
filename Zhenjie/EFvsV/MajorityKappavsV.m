@@ -14,7 +14,7 @@ filefolder_Polarized='/Users/Zhenjie/Data/2016-05-16/';
 fileS1='05-16-2016_19_44_43_top';
 [~,~,~,VsortS1,~,~,~,EFS1]=EOS_Online( [filefolder_Polarized,fileS1,'.fits'] ,'ROI1',[157,50,390,450],...
     'ROI2',[157,130,390,320],'TailRange',[90,410],'ShowOutline',1,'KappaMode',2,'PolyOrder',10,'VrangeFactor',5,'IfHalf',0,'kmax',0.9,'kmin',0.05,...
-    'Fudge',2.8,'BGSubtraction',0,'IfFitExpTail',1,'Nsat',330,'ShowPlot',1,'CutOff',inf,'IfHalf',0);
+    'Fudge',2.7,'BGSubtraction',0,'IfFitExpTail',1,'Nsat',330,'ShowPlot',1,'CutOff',inf,'IfHalf',0);
 
 %%
 filefolder_Polarized='/Users/Zhenjie/Data/2016-05-16/';
@@ -24,7 +24,7 @@ EFS1List={};
 for i=1:length(fileS1List)
     [~,~,~,VsortS1,~,~,~,EFS1]=EOS_Online( [filefolder_Polarized,fileS1List{i},'.fits'] ,'ROI1',[157,50,390,450],...
      'ROI2',[157,150,390,350],'TailRange',[90,410],'ShowOutline',0,'KappaMode',2,'PolyOrder',10,'VrangeFactor',5,'IfHalf',0,'kmax',0.9,'kmin',0.15,...
-    'Fudge',2.8,'BGSubtraction',0,'IfFitExpTail',1,'Nsat',330,'ShowPlot',0,'CutOff',inf,'IfHalf',0);
+    'Fudge',2.7,'BGSubtraction',0,'IfFitExpTail',1,'Nsat',330,'ShowPlot',0,'CutOff',inf,'IfHalf',0);
     VsortS1List=[VsortS1List;VsortS1];
     EFS1List=[EFS1List;EFS1];
 end
@@ -66,7 +66,7 @@ errorbar(VS1Bin,EFS1Bin,EFS1Err,'r.');
 xlabel('V (Hz)');ylabel('EF (Hz)');
 title('Majority, EF vs V, Binned');
 %%
-[kappa1T,kappa1Terr] = FiniteD( VS1Bin,VS1Err,EFS1Bin,EFS1Err,4);
+[kappa1T,kappa1Terr] = FiniteD( VS1Bin,VS1Err,EFS1Bin,EFS1Err,3);
 kappa1T=-kappa1T;
 errorbar(VS1Bin,kappa1T,kappa1Terr,'r.');
 hold on
@@ -104,8 +104,8 @@ P1T=P./P0;
 % scatter(VS1Bin,P1T);
 % ylim([0,5]);
 
-Vth1=1000;
-Vth2=8000;
+Vth1=2000;
+Vth2=7000;
 mask1=VS1Bin>Vth1;mask2=VS1Bin<Vth2;
 mask=mask1 & mask2;
 VSample=VS1Bin(mask);
@@ -177,29 +177,72 @@ Vpfit=linspace(0,8000,100);
 EFpfit=polyval(P,Vpfit);
 
 figure1 = figure;
-axes1 = axes('Parent',figure1);
-plot(VS1Plot/1e3,EFS1Plot/1e3,'r','linewidth',2)
+axes1 = axes('Parent',figure1,'unit','inch','position',[1,1,4.8,4.8]);
+plot(VS1Plot/1e3,EFS1Plot/1e3,'linewidth',2,'color',[20/255,116/255,187/255])
 hold on
-plot(Vpfit/1e3,EFpfit/1e3,'--','linewidth',1);
+%plot(Vpfit/1e3,EFpfit/1e3,'--','linewidth',1);
 hold off
 xlabel('V (kHz)');ylabel('EF (kHz)');
 title('Majority, EF vs V, Binned');
 % Set the remaining axes properties
-ylim([-0.5,8]);xlim([0,12]);
-set(axes1,'XTick',[0 4 8 12],'YTick',[0 2 4 6 8]);
+ylim([-0.5,6]);xlim([2.5,12]);
+set(axes1,'XTick',[3 5 7 9 11],'YTick',[0 2 4 6]);
 savefig(figure1,'MajorityEFvsV.fig');
 print(figure1,'MajorityEFvsV','-dpdf');
 
 %% plot kappa vs V
 figure1 = figure;
-axes1 = axes('Parent',figure1);
-errorbar1derr_Z(VS1Bin/1e3,kappa1T,kappa1Terr,'LineStyle','none','Markersize',15,'Color','b');
+axes1 = axes('Parent',figure1,'unit','inch','position',[1,1,4.8,4.8]);
+errorbar1derr_Z(VS1Bin/1e3,kappa1T,kappa1Terr,'LineStyle','none','Markersize',15,'Color','r');
 hold on
 line([800,800],[-0.2e1,1e1])
 hold off
-xlim([0,12]);ylim([-0.2,1.4]);
+xlim([2.5,12]);ylim([-0.1,1.1]);
 xlabel('V (Hz)');ylabel('KappaTilde');
-set(axes1,'XTick',[0 4 8 12],'YTick',[0 0.5 1]);
+set(axes1,'XTick',[2 4 6 8 10 12],'YTick',[0 2 4 6]);
 savefig(figure1,'MajorityKappavsV.fig');
 print(figure1,'MajorityKappavsV','-dpdf');
 
+%% Do the deriviative to every single shot and then average
+KappaList={};
+VBinList={};
+VStackList=[];
+KappaStackList=[];
+Nbin=120;
+Vgrid=linspace(0,1.3e4,Nbin+1);
+
+for i=1:length(VsortS1List)
+    [VtempBin,EFtempBin,~,~]=BinGrid(VsortS1List{i}/hh,EFS1List{i}/hh,Vgrid,0);
+    VtempBin(isnan(VtempBin))=[];EFtempBin(isnan(EFtempBin))=[];
+    VBinList=[VBinList;VtempBin];
+    KappaTemp=FiniteD(VtempBin,VtempBin*0,EFtempBin,EFtempBin*0,3);
+    KappaTemp=-KappaTemp;
+    KappaList=[KappaList;KappaTemp];
+    VStackList=[VStackList,VtempBin];
+    KappaStackList=[KappaStackList,KappaTemp];
+end
+%%
+scatter(VStackList,KappaStackList)
+%%
+[VS_D,Kappa_D,VS_DErr,Kappa_DErr]=BinGrid(VStackList,KappaStackList,Vgrid,0);
+errorbar(VS_D,Kappa_D,Kappa_DErr,'r.')
+hold on
+line([800,800],[-0.2e4,1e4])
+hold off
+xlim([0,16000]);ylim([-0.2,1.4]);
+xlabel('V (Hz)');ylabel('KappaTilde');
+title('Majority, after averaging');
+xlim([0,12000]);
+%% plot kappa vs V
+Nmask=2;
+mask=1:Nmask:length(VS_D);
+figure1 = figure;
+axes1 = axes('Parent',figure1,'unit','inch','position',[1,1,4.8,4.8]);
+errorbar1derr_Z(VS_D(mask)/1e3,Kappa_D(mask),Kappa_DErr(mask),'LineStyle','none','Markersize',15,'Color','r');
+hold on
+line([800,800],[-0.2e1,1e1])
+hold off
+xlim([2.5,12]);ylim([-0.1,1.1]);
+xlabel('V (Hz)');ylabel('KappaTilde');
+set(axes1,'XTick',[3 5 7 9 11],'YTick',[0 0.25 0.5 0.75 1]);
+savefig(figure1,'MajorityKappavsV_D.fig');
