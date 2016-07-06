@@ -123,7 +123,39 @@ ylim([0,1000]);
 T=mean(TSample)
 ylabel('k_B T (Hz)');xlabel('V(Hz)');
 title('Temperature get from P/P_0');
+%% Do the deriviative to every single shot and then average
+KappaList={};
+VBinList={};
+VStackList=[];
+KappaStackList=[];
+Nbin=120;
+Vgrid=linspace(0,1.3e4,Nbin+1);
 
+for i=1:length(VsortS1List)
+    [VtempBin,EFtempBin,~,~]=BinGrid(VsortS1List{i}/hh,EFS1List{i}/hh,Vgrid,0);
+    VtempBin(isnan(VtempBin))=[];EFtempBin(isnan(EFtempBin))=[];
+    VBinList=[VBinList;VtempBin];
+    KappaTemp=FiniteD(VtempBin,VtempBin*0,EFtempBin,EFtempBin*0,3);
+    KappaTemp=-KappaTemp;
+    KappaList=[KappaList;KappaTemp];
+    VStackList=[VStackList,VtempBin];
+    KappaStackList=[KappaStackList,KappaTemp];
+end
+
+%%
+scatter(VStackList,KappaStackList)
+ylim([-0.1,1.4])
+%% Average for the Kappa vs V figure
+
+[VS_D,Kappa_D,VS_DErr,Kappa_DErr]=BinGrid(VStackList,KappaStackList,Vgrid,0);
+errorbar(VS_D,Kappa_D,Kappa_DErr,'r.')
+hold on
+%line([800,800],[-0.2e4,1e4])
+hold off
+xlim([0,16000]);ylim([-0.2,1.4]);
+xlabel('V (Hz)');ylabel('KappaTilde');
+title('Majority, after averaging');
+xlim([0,12000]);
 
 %% Switch to Minority
 load('Data/2016-06-09-minorityB.mat');
@@ -233,8 +265,8 @@ for i=1:length(EFS2List)
     EFBin(mark)=[];
     VS2BinList=[VS2BinList;VBin];
     EFS2BinList=[EFS2BinList;EFBin];
-    EFS1=interp1(VS1Bin,EFS1Bin,VBin,'spline','extrap');
-    Vm=VBin-0.615*EFS1;
+    EFS1intp=interp1(VS1Bin,EFS1Bin,VBin,'spline','extrap');
+    Vm=VBin-0.615*EFS1intp;
     VmS2List=[VmS2List;Vm];
     Kappa=FiniteD(Vm,Vm*0,EFBin,EFBin*0,4);
     Kappa=-Kappa;
@@ -317,5 +349,55 @@ TTilde2pick=TTilde2pick(5:end);
 Ppick=Ppick(5:end);
 %%
 scatter(Ppick,kappa2Tpick)
+%% plot EF vs V
+Nbin=200;
+%Vgrid=linspace(0,sqrt(max(VsortS1)),Nbin+1).^2;
+Vgrid=linspace(0,1.2e4,Nbin+1);
+
+[VS1Plot,EFS1Plot,VS1PlotErr,EFS1PlotErr]=BinGrid(VsortS1,EFS1,Vgrid,2);
+
+%define the shading area
+Vs=linspace(0,1.5,50);
+basevalue=-0.5;
+uppervalue=0*Vs+8;
+
+figure1 = figure;
+axes1 = axes('Parent',figure1,'unit','inch','position',[1,1,3.4,3.4]);
+plot(VS1Plot/1e3,EFS1Plot/1e3,'linewidth',1,'color',[36/255,85/255,189/255])
+hold on
+plot(VS2Bin/1e3,EFS2Bin/1e3,'color',[62/255,166/255,60/255]);
+%plot(Vpfit/1e3,EFpfit/1e3,'--','linewidth',1);
+area(Vs,uppervalue,basevalue,'FaceAlpha',0.1,'EdgeColor','none','FaceColor',[255/255,207/255,49/255])
+hold off
+xlabel('V (kHz)');ylabel('EF (kHz)');
+title('EF vs V, Binned');
+% Set the remaining axes properties
+ylim([-0.5,6]);xlim([0,8]);
+set(axes1,'XTick',[0 4 8 12],'YTick',[0 2 4 6]);
+set(axes1,'XColor',[0 0 0],'YColor',[0 0 0],'ZColor',[0 0 0])
 %%
-save('Data/2016-06-09B-Processed.mat','Ppick','TTilde2pick','kappa2Tpick','EFS2pick');
+%define the shading area
+Vs=linspace(0,1.5,50);
+basevalue=-0.1;
+uppervalue=0*Vs+1.4;
+Nmask=1;
+mask=mod(1:length(VS_D),Nmask)==0;
+% mask2=VS_D>2500;
+% mask=mask1 & mask2;
+
+figure1 = figure;
+axes1 = axes('Parent',figure1,'unit','inch','position',[1,1,3.4,3.4]);
+errorbar1derr_Z(VS_D(mask)/1e3,Kappa_D(mask),Kappa_DErr(mask),'Marker','.','Markersize',15,'LineStyle','none','ErrLineWidth',0.75,'MarkerFaceColor',[255/255,85/255,65/255],'MarkerEdgeColor',[255/255,85/255,65/255],'ErrBarColor',[201/255,67/255,52/255]);
+hold on
+area(Vs,uppervalue,basevalue,'FaceAlpha',0.1,'EdgeColor','none','FaceColor',[255/255,207/255,49/255])
+%plot(VS1Bin/1e3,KappaTilde_T)
+hold off
+xlim([0,8]);ylim([-0.1,1.4]);
+xlabel('V (Hz)');ylabel('KappaTilde');
+set(axes1,'XTick',[0 4 8 12],'YTick',[0 0.25 0.5 0.75 1 1.25]);
+set(axes1,'XColor',[0 0 0],'YColor',[0 0 0],'ZColor',[0 0 0])
+title('Kappa vs V, Binned');
+box on
+
+%%
+%save('Data/2016-06-09B-Processed.mat','Ppick','TTilde2pick','kappa2Tpick','EFS2pick');

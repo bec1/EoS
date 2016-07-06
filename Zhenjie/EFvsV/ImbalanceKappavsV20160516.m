@@ -14,9 +14,9 @@ ImglistMajority=imglistpick;
 % [~,~,~,VsortS1,~,~,~,EFS1]=EOS_Online( ImglistMajority{2} ,'ROI1',[157,25,390,490],...
 %     'ROI2',[157,125,390,380],'TailRange',[60,430],'ShowOutline',1,'KappaMode',2,'PolyOrder',10,'VrangeFactor',5,'IfHalf',0,'kmax',0.9,'kmin',0.05,...
 %     'Fudge',2.8,'BGSubtraction',0,'IfFitExpTail',1,'Nsat',330,'ShowPlot',1,'CutOff',inf,'IfHalf',0);
-[~,~,~,VsortS1,~,~,~,EFS1]=EOS_Online( ImglistMajority{1} ,'ROI1',[157,50,390,450],...
-    'ROI2',[157,130,390,320],'TailRange',[90,410],'ShowOutline',1,'KappaMode',2,'PolyOrder',10,'VrangeFactor',5,'IfHalf',0,'kmax',0.9,'kmin',0.05,...
-    'Fudge',2.8,'BGSubtraction',0,'IfFitExpTail',1,'Nsat',330,'ShowPlot',1,'CutOff',inf,'IfHalf',0);
+[~,~,~,VsortS1,~,~,~,EFS1]=EOS_Online( ImglistMajority{9} ,'ROI1',[157,50,390,450],...
+    'ROI2',[157,130,390,320],'TailRange',[90,410],'ShowOutline',1,'KappaMode',5,'PolyOrder',10,'VrangeFactor',5,'IfHalf',0,'kmax',0.9,'kmin',0.05,...
+    'Fudge',2.8,'BGSubtraction',0,'IfFitExpTail',1,'IfBin',1,'SM',4,'Nsat',330,'ShowPlot',1,'CutOff',inf,'IfHalf',0);
 
 %% Get the profile for all of them
 VsortS1List={};
@@ -105,7 +105,7 @@ P1T=P./P0;
 % ylim([0,5]);
 
 Vth1=1000;
-Vth2=7000;
+Vth2=8000;
 mask1=VS1Bin>Vth1;mask2=VS1Bin<Vth2;
 mask=mask1 & mask2;
 VSample=VS1Bin(mask);

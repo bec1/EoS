@@ -9,7 +9,7 @@ function [ KappaTilde, PTilde, TTilde, CV_NkB , beta_mu_vec ,Z_vec ] = IdealFerm
 
 
 % Default parameters
-defaultLogPoints = 10000;
+defaultLogPoints = 50000;%10000;
 
 % create input parser
 p = inputParser;
@@ -19,8 +19,8 @@ parse(p,varargin{:});
 LogPoints = p.Results.LogPoints;
 
 %% Generate EOS data for a large regime
-beta_mu_start = -5;
-beta_mu_stop = 30;
+beta_mu_start = -10; %-5
+beta_mu_stop = 30; 
 beta_mu_vec = linspace(beta_mu_start,beta_mu_stop, LogPoints);
 Z_vec = exp(beta_mu_vec);
 

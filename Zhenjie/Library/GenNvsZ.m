@@ -34,8 +34,11 @@ if ShowOutline
     hold on
     plot(x1,Yt,'r.','MarkerSize',5);
     plot(x2,Yt,'r.','MarkerSize',5);
+    vector1=x1(end)-x1(1)+(Yt(end)-Yt(1))*1i;
+    vector2=(x2(end)-x2(1))+(Yt(end)-Yt(1))*1i;
+    theta=abs(angle(vector1/vector2))/pi*180;
     caxis([-10,45]);
-    questdlg('I am just giving you some time to check the out line, press any key to continue');
+    questdlg(['I am just giving you some time to check the out line, press any key to continue, the cone angle is',num2str(theta)]);
     pause();
     close(h)
 end

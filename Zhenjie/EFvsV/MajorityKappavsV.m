@@ -14,7 +14,7 @@ filefolder_Polarized='/Users/Zhenjie/Data/2016-05-16/';
 fileS1='05-16-2016_19_44_43_top';
 [~,~,~,VsortS1,~,~,~,EFS1]=EOS_Online( [filefolder_Polarized,fileS1,'.fits'] ,'ROI1',[157,50,390,450],...
     'ROI2',[157,130,390,320],'TailRange',[90,410],'ShowOutline',1,'KappaMode',2,'PolyOrder',10,'VrangeFactor',5,'IfHalf',0,'kmax',0.9,'kmin',0.05,...
-    'Fudge',2.7,'BGSubtraction',0,'IfFitExpTail',1,'Nsat',330,'ShowPlot',1,'CutOff',inf,'IfHalf',0);
+    'Fudge',2.8,'BGSubtraction',0,'IfFitExpTail',1,'Nsat',330,'ShowPlot',1,'CutOff',inf,'IfHalf',0);
 
 %%
 filefolder_Polarized='/Users/Zhenjie/Data/2016-05-16/';
@@ -24,15 +24,15 @@ EFS1List={};
 for i=1:length(fileS1List)
     [~,~,~,VsortS1,~,~,~,EFS1]=EOS_Online( [filefolder_Polarized,fileS1List{i},'.fits'] ,'ROI1',[157,50,390,450],...
      'ROI2',[157,150,390,350],'TailRange',[90,410],'ShowOutline',0,'KappaMode',2,'PolyOrder',10,'VrangeFactor',5,'IfHalf',0,'kmax',0.9,'kmin',0.15,...
-    'Fudge',2.7,'BGSubtraction',0,'IfFitExpTail',1,'Nsat',330,'ShowPlot',0,'CutOff',inf,'IfHalf',0);
+    'Fudge',1.6,'BGSubtraction',0,'IfFitExpTail',1,'Nsat',330,'ShowPlot',0,'CutOff',inf,'IfHalf',0);
     VsortS1List=[VsortS1List;VsortS1];
     EFS1List=[EFS1List;EFS1];
 end
 %%
-plot(VsortS1List{7}/hh,EFS1List{7}/hh,'r.');
+plot(VsortS1List{2}/hh,EFS1List{2}/hh,'r.');
 hold on
-plot(VsortS1List{8}/hh,EFS1List{8}/hh,'b.');
-plot(VsortS1List{10}/hh,EFS1List{10}/hh,'g.');
+plot(VsortS1List{5}/hh,EFS1List{5}/hh,'b.');
+plot(VsortS1List{7}/hh,EFS1List{7}/hh,'g.');
 hold off
 %%
 VsortS1=[];
@@ -66,7 +66,7 @@ errorbar(VS1Bin,EFS1Bin,EFS1Err,'r.');
 xlabel('V (Hz)');ylabel('EF (Hz)');
 title('Majority, EF vs V, Binned');
 %%
-[kappa1T,kappa1Terr] = FiniteD( VS1Bin,VS1Err,EFS1Bin,EFS1Err,3);
+[kappa1T,kappa1Terr] = FiniteD( VS1Bin,VS1Err,EFS1Bin,EFS1Err,4);
 kappa1T=-kappa1T;
 errorbar(VS1Bin,kappa1T,kappa1Terr,'r.');
 hold on
@@ -75,7 +75,7 @@ hold off
 xlim([0,16000]);ylim([-0.2,1.4]);
 xlabel('V (Hz)');ylabel('KappaTilde');
 title('Majority, after averaging');
-xlim([0,12000])
+xlim([0,12000]);
 %% Get the T from the kappa,
 Vth1=6000;
 Vth2=8000;
@@ -89,7 +89,10 @@ kappaSample=kappa1T(mask);
 TtildeSample=interp1(KappaTildeT,TTildeT,kappaSample,'spline');
 TSample=TtildeSample.*EFSample;
 scatter(VSample,TSample);
-ylim([0,1000]);
+hold on
+line([Vth1,Vth2],[770,770],'color','r')
+hold off
+ylim([0,1500]);
 T=mean(TSample)
 title('Temperature get from \kappa/\kappa_0');
 ylabel('k_B T (Hz)');xlabel('V(Hz)');
@@ -104,8 +107,8 @@ P1T=P./P0;
 % scatter(VS1Bin,P1T);
 % ylim([0,5]);
 
-Vth1=2000;
-Vth2=7000;
+Vth1=1000;
+Vth2=8000;
 mask1=VS1Bin>Vth1;mask2=VS1Bin<Vth2;
 mask=mask1 & mask2;
 VSample=VS1Bin(mask);
@@ -114,43 +117,12 @@ PSample=P1T(mask);
 TtildeSample=interp1(PTildeT,TTildeT,PSample,'spline');
 TSample=TtildeSample.*EFSample;
 scatter(VSample,TSample);
-ylim([0,1000]);
+ylim([0,2000]);
 T=mean(TSample)
 ylabel('k_B T (Hz)');xlabel('V(Hz)');
 title('Temperature get from P/P_0');
-%% modify the potential
-%%
-EFS2grid1=interp1(VS2Bin,EFS2Bin,VS1Bin,'spline','extrap');
-EFS2grid1(VS1Bin>5000)=0;
-VmS1=VS1Bin-0.691*EFS2grid1;
-scatter(VmS1,EFS1Bin);
-%%
-[kappa1Tm,~] = FiniteD( VmS1,VmS1*0,EFS1Bin,EFS1Err,3 );
-kappa1Tm=-kappa1Tm;
-scatter(VmS1,kappa1Tm)
-xlim([-500,7000])
-ylabel('KappaTilde');xlabel('V_{modified}')
 
-%%
-Vrange=2000;
-%B=linspace(-0.3,0.3,500);
-B=0.0691;
-Err=B*0;
-mask=VS1Bin<Vrange;
-for i=1:length(B)
-    VmS1=VS1Bin-B(i)*EFS2grid1;
-    X=VmS1(mask);
-    Y=EFS1Bin(mask);
-    P=polyfit(X,Y,1);
-    f=polyval(P,X);
-    Err(i)=mean((f-Y).^2);
-end
-plot(B,Err,'r.');
-xlabel('-B');
-xlim([0,0.1]);
-ylim([0,600]);
-ylabel('\chi of the linear fitting');
-[~,m]=min(Err);
+
 
 %% plot EF vs V
 Nbin=200;
@@ -177,8 +149,8 @@ Vpfit=linspace(0,8000,100);
 EFpfit=polyval(P,Vpfit);
 
 figure1 = figure;
-axes1 = axes('Parent',figure1,'unit','inch','position',[1,1,4.8,4.8]);
-plot(VS1Plot/1e3,EFS1Plot/1e3,'linewidth',2,'color',[20/255,116/255,187/255])
+axes1 = axes('Parent',figure1,'unit','inch','position',[1,1,1.4,1.4]);
+plot(VS1Plot/1e3,EFS1Plot/1e3,'linewidth',1,'color',[36/255,85/255,189/255])
 hold on
 %plot(Vpfit/1e3,EFpfit/1e3,'--','linewidth',1);
 hold off
@@ -187,19 +159,62 @@ title('Majority, EF vs V, Binned');
 % Set the remaining axes properties
 ylim([-0.5,6]);xlim([2.5,12]);
 set(axes1,'XTick',[3 5 7 9 11],'YTick',[0 2 4 6]);
+set(axes1,'XColor',[0 0 0],'YColor',[0 0 0],'ZColor',[0 0 0])
 savefig(figure1,'MajorityEFvsV.fig');
 print(figure1,'MajorityEFvsV','-dpdf');
+%% Fit a exponential function to the tail of the cloud to determine the temperature
+FitRangeExp=linspace(6000,8000,50);
+Tfitexp=FitRangeExp*0;
+Kiexp=FitRangeExp*0;
+fitfun=@(p,x) p(1)*exp(-p(2)*x);
+amp=FitRangeExp*0;
+offsetexp=FitRangeExp*0;
+for i=1:length(FitRangeExp)
+    mask=VS1Bin>FitRangeExp(i);
+    Vfitexp=VS1Bin(mask);
+    EFfitexp=EFS1Bin(mask);
+    P0=[3.6e5,0.66*(1/T),0];
+    P=nlinfit(Vfitexp,EFfitexp,fitfun,P0);
+    Tfitexp(i)=0.66*(1/P(2));
+    EFfittedexp=fitfun(P,Vfitexp);
+    Kiexp(i)=mean((EFfittedexp-EFfitexp).^2);
+    %offsetexp(i)=P(3);
+    amp(i)=P(1);
+end
+%%
+scatter(FitRangeExp,Kiexp);
+xlabel('Fit Range (Hz)');ylabel('Fitting Error')
+%%
+scatter(FitRangeExp,Tfitexp);
+xlabel('Fit Range (Hz)');ylabel('Fitted Temperature (Hz)')
+%%
+mask=VS1Bin>FitRangeExp(i);
+Vfitexp=VS1Bin(mask);
+EFfitexp=EFS1Bin(mask);
+P0=[3.6e5,0.66*(1/T),0];
+P=nlinfit(Vfitexp,EFfitexp,fitfun,P0);
+Tfitexp(i)=0.66*(1/P(2));
+EFfittedexp=fitfun(P,Vfitexp);
+EFtailfit=EFS1Bin;
+EFtailfit(mask)=EFfittedexp;
 
 %% plot kappa vs V
+TTilde_T=770./EFtailfit;
+% mask=EFS1Bin<20;
+% TTilde_T(mask)=25;
+KappaTilde_T=interp1(TTildeT,KappaTildeT,TTilde_T,'spline');
+
+
 figure1 = figure;
 axes1 = axes('Parent',figure1,'unit','inch','position',[1,1,4.8,4.8]);
 errorbar1derr_Z(VS1Bin/1e3,kappa1T,kappa1Terr,'LineStyle','none','Markersize',15,'Color','r');
 hold on
 line([800,800],[-0.2e1,1e1])
+plot(VS1Bin/1e3,KappaTilde_T,'k-')
 hold off
-xlim([2.5,12]);ylim([-0.1,1.1]);
+xlim([0,12]);ylim([-0.3,1.4]);
 xlabel('V (Hz)');ylabel('KappaTilde');
-set(axes1,'XTick',[2 4 6 8 10 12],'YTick',[0 2 4 6]);
+set(axes1,'XTick',[2 4 6 8 10 12],'YTick',[0 1]);
 savefig(figure1,'MajorityKappavsV.fig');
 print(figure1,'MajorityKappavsV','-dpdf');
 
@@ -224,6 +239,7 @@ end
 %%
 scatter(VStackList,KappaStackList)
 %%
+
 [VS_D,Kappa_D,VS_DErr,Kappa_DErr]=BinGrid(VStackList,KappaStackList,Vgrid,0);
 errorbar(VS_D,Kappa_D,Kappa_DErr,'r.')
 hold on
@@ -233,16 +249,21 @@ xlim([0,16000]);ylim([-0.2,1.4]);
 xlabel('V (Hz)');ylabel('KappaTilde');
 title('Majority, after averaging');
 xlim([0,12000]);
+
+
 %% plot kappa vs V
 Nmask=2;
 mask=1:Nmask:length(VS_D);
 figure1 = figure;
-axes1 = axes('Parent',figure1,'unit','inch','position',[1,1,4.8,4.8]);
-errorbar1derr_Z(VS_D(mask)/1e3,Kappa_D(mask),Kappa_DErr(mask),'LineStyle','none','Markersize',15,'Color','r');
+axes1 = axes('Parent',figure1,'unit','inch','position',[1,1,1.4,1.4]);
+errorbar1derr_Z(VS_D(mask)/1e3,Kappa_D(mask),Kappa_DErr(mask),'Marker','.','Markersize',5,'LineStyle','none','ErrLineWidth',0.75,'MarkerFaceColor',[255/255,85/255,65/255],'MarkerEdgeColor',[255/255,85/255,65/255],'ErrBarColor',[201/255,67/255,52/255]);
 hold on
-line([800,800],[-0.2e1,1e1])
+%plot(VS1Bin/1e3,KappaTilde_T)
 hold off
 xlim([2.5,12]);ylim([-0.1,1.1]);
 xlabel('V (Hz)');ylabel('KappaTilde');
 set(axes1,'XTick',[3 5 7 9 11],'YTick',[0 0.25 0.5 0.75 1]);
+set(axes1,'XColor',[0 0 0],'YColor',[0 0 0],'ZColor',[0 0 0])
+box on
 savefig(figure1,'MajorityKappavsV_D.fig');
+

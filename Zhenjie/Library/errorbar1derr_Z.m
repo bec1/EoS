@@ -4,9 +4,11 @@ function hh = errorbar1derr_Z( x,y,yerr,varargin )
 LineStyle='-';
 Marker='.';
 Color='r';
+ErrBarColor=Color;
 Markersize=5;
 MarkerFaceColor='r';
 ErrLineWidth=0.5;
+MarkerEdgeColor='r';
 for i =1:length(varargin)
     if ischar(varargin{i})
         switch varargin{i}
@@ -22,20 +24,24 @@ for i =1:length(varargin)
                 Marker=varargin{i+1};
             case 'ErrLineWidth'
                 ErrLineWidth=varargin{i+1};
+            case 'MarkerEdgeColor'
+                MarkerEdgeColor=varargin{i+1};
+            case 'ErrBarColor'
+                ErrBarColor=varargin{i+1};
         end
     end
 end
 
 
-hh=plot(x,y,'LineStyle',LineStyle,'color',Color,'MarkerFaceColor',MarkerFaceColor,'Marker',Marker,...
-    'Markersize',Markersize);
-hold on
 for i=1:length(y)
-    line([x(i),x(i)],[y(i)-yerr(i),y(i)+yerr(i)],'Color',Color,'Linewidth',ErrLineWidth);
+    line([x(i),x(i)],[y(i)-yerr(i),y(i)+yerr(i)],'Color',ErrBarColor,'Linewidth',ErrLineWidth);
 end
+hold on
+hh=plot(x,y,'LineStyle',LineStyle,'color',Color,'MarkerFaceColor',MarkerFaceColor,'Marker',Marker,...
+    'Markersize',Markersize,'MarkerEdgeColor',MarkerEdgeColor);
+
 hold off
 
 
 
 end
-
