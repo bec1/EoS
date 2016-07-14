@@ -1,4 +1,4 @@
-function [Pt,Kt,nsort,Vsort,Zsort,Ptsel,Ktsel,EFsort,P,zcor] = EOS_Online( Input,varargin )
+function [Pt,Kt,nsort,Vsort,Zsort,Ptsel,Ktsel,EFsort,P,zcor,Vsel] = EOS_Online( Input,varargin )
 %The hope is to use this function as an easy way to do online fitting for
 %EoS data
 %FileName: the name of the file
@@ -7,7 +7,8 @@ function [Pt,Kt,nsort,Vsort,Zsort,Ptsel,Ktsel,EFsort,P,zcor] = EOS_Online( Input
 %ns:numberdensity
 %Vs:potential
 %Zs:The z position
-
+IfFourierFilter=0;
+CutOffFactor=0.5;
 CropROI1=1;
 CropROI2=1;
 CropTail=1;
@@ -100,6 +101,10 @@ for i =1:length(varargin)
                 BinGridSize=varargin{i+1};
             case 'IfSuperSampling'
                 IfSuperSampling=varargin{i+1};
+            case 'IfFourierFilter'
+                IfFourierFilter=varargin{i+1};
+            case 'CutOffFactor'
+                CutOffFactor=varargin{i+1};
         end
     end
 end
@@ -155,6 +160,12 @@ end
 %ROI acquiring end
 
 Nimg=Nimg-BGSubtraction;
+
+%FourierFilter
+if IfFourierFilter
+    ImgFiltered=FourierFilter(Nimg(ROI1(2):ROI1(4),ROI1(1):ROI1(3)),CutOffFactor);
+    Nimg(ROI1(2):ROI1(4),ROI1(1):ROI1(3))=ImgFiltered;
+end
 
 Nimg(isnan(Nimg))=0;
 Nimg(Nimg==inf)=0;
@@ -257,22 +268,36 @@ end
 nmax=max(nsort);
 np=nsort/nmax;
 if SelectByPortion
-    Ktsel=Kt(np>Portion);
-    Ptsel=Pt(np>Portion);
-    Zsel=Zsort(np>Portion);
-    Ktsel(abs(Zsel)<kmin*Ztf)=[];
-    Ptsel(abs(Zsel)<kmin*Ztf)=[];
-    Zsel(abs(Zsel)<kmin*Ztf)=[];
+%     Ktsel=Kt(np>Portion);
+%     Ptsel=Pt(np>Portion);
+%     Zsel=Zsort(np>Portion);
+%     Ktsel(abs(Zsel)<kmin*Ztf)=[];
+%     Ptsel(abs(Zsel)<kmin*Ztf)=[];
+%     Zsel(abs(Zsel)<kmin*Ztf)=[];
+    mask1=np<Portion;
+    mask2=abs(Zsort)>kmin*Ztf;
+    mask=mask1 & mask2;
+    Ktsel=Kt(mask);
+    Ptsel=Pt(mask);
+    Vsel=Vsort(mask);
 else
-    Ktsel=Kt;Ptsel=Pt;Zsel=Zsort;
-    Ktsel(abs(Zsel)>kmax*Ztf)=[];
-    Ptsel(abs(Zsel)>kmax*Ztf)=[];
-    Zsel(abs(Zsel)>kmax*Ztf)=[];
-    Ktsel(abs(Zsel)<kmin*Ztf)=[];
-    Ptsel(abs(Zsel)<kmin*Ztf)=[];
-    Zsel(abs(Zsel)<kmin*Ztf)=[];
+%     Ktsel=Kt;Ptsel=Pt;Zsel=Zsort;
+%     Ktsel(abs(Zsel)>kmax*Ztf)=[];
+%     Ptsel(abs(Zsel)>kmax*Ztf)=[];
+%     Zsel(abs(Zsel)>kmax*Ztf)=[];
+%     Ktsel(abs(Zsel)<kmin*Ztf)=[];
+%     Ptsel(abs(Zsel)<kmin*Ztf)=[];
+%     Zsel(abs(Zsel)<kmin*Ztf)=[];
+    mask1=abs(Zsort)>kmin*Ztf;
+    mask2=abs(Zsort)<kmax*Ztf;
+    mask=mask1 & mask2;
+    Ktsel=Kt(mask);
+    Ptsel=Pt(mask);
+    Vsel=Vsort(mask);
 end
+
 EFsort=real(hbar^2*(6*pi^2*nsort).^(2/3)/(2*mli));
+
 %Plot nvsz with TF fitting
 if FinalPlot
     

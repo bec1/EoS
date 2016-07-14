@@ -24,7 +24,7 @@ end
 
 
 [x1,x2,~,~,Yt,p1,p2 ]=CylinderOutline( Img,ROI2 );
-x1=round(x1);x2=round(x2);
+%x1=round(x1);x2=round(x2);
 
 % check if ShowOutline is asked
 if ShowOutline

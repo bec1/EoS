@@ -19,7 +19,7 @@ parse(p,varargin{:});
 LogPoints = p.Results.LogPoints;
 
 %% Generate EOS data for a large regime
-beta_mu_start = -10; %-5
+beta_mu_start = -30; %-5
 beta_mu_stop = 30; 
 beta_mu_vec = linspace(beta_mu_start,beta_mu_stop, LogPoints);
 Z_vec = exp(beta_mu_vec);

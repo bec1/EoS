@@ -25,7 +25,7 @@ end
 %do the integral to get P
 for i=1:N-1
     intfun=ns(i:end);
-    P(i)=trapz(V(i:end),intfun);
+    P(i)=trapz(V(i:end),intfun); %% do not use simps here, could cause some issue.
 end
 P(N)=0;
 

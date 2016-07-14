@@ -14,11 +14,11 @@ ROI1=[215,25,312,402];
 ROI2=[209,187,335,243];
 for i=1:N
     [Pt,Kt,nsort,Vsort,Zsort,Ptsel,Ktsel,~]=EOS_Online( [Folder,list{i},'.fits'],'ROI1',[215,25,312,402],...
-    'ROI2',[209,187,335,243],'ShowOutline',0,'TailRange',[85,325],'KappaMode',5,'PolyOrder',10,...
-    'VrangeFactor',5,'IfHalf',0,'kmax',1.1,'kmin',0.2,'Points',1,...
+    'ROI2',[209,187,335,243],'ShowOutline',0,'TailRange',[85,325],'KappaMode',1,'PolyOrder',2,...
+    'VrangeFactor',5,'IfHalf',0,'kmax',1.1,'kmin',0.25,'Points',5,...
     'Fudge',2.62,'smooth',1,'CutOff',inf,'ShowPlot',0,'ShowOutline',0,'BGSubtraction',BGimg,...
     'SelectByPortion',0,'Portion',0.1,'IfTailTailor',1,'IfFitExpTail',0,'ExpTailPortion',0.06,...
-    'SM',4,'IfBin',1,'BinGridSize',150,'IfSuperSampling',0);
+    'SM',4,'IfBin',0,'BinGridSize',250,'IfSuperSampling',0);
 %     [Pt,Kt,nsort,Vsort,Zsort,Ptsel,Ktsel,~]=EOS_Online( [Folder,list{i},'.fits'],'ROI1',[215,25,312,402],...
 %     'ROI2',[209,187,335,243],'TailRange',[85,325],'KappaMode',2,'PolyOrder',10,'VrangeFactor',5,'IfHalf',0,'kmax',1.1,'kmin',0.1,'Points',3,...
 %     'Fudge',2.62,'smooth',0,'CutOff',inf,'ShowPlot',0,'ShowOutline',0,'BGSubtraction',BGimg);
@@ -44,56 +44,12 @@ hold on
 plot(PTilde,KappaTilde,'color','b','linewidth',3);
 xlabel('P/P_0');ylabel('\kappa/\kappa_0');
 hold off
-%%
-PtBinMin=0.3;
-PtBinMax=7;
-dPt=0.02;
-Ptbin=PtBinMin:dPt:PtBinMax;
-Nbin=size(Ptbin,2);
-M=length(KtlistF);
-KtBinList=cell(1,Nbin);
-KtMean=zeros(1,Nbin);
-KtStd=zeros(1,Nbin);
-for i=1:Nbin
-    KtBinList{i}=[];
-end
-
-for i=1:M
-    K=round((PtlistF(i)-PtBinMin)/dPt+1);
-    if K<=Nbin && K>=1
-        temp=KtBinList{K};
-        KtBinList{K}=[temp,KtlistF(i)];
-    end
-end
-
-for i=1:Nbin
-    KtMean(i)=mean(KtBinList{i});
-    KtStd(i)=std(KtBinList{i})/sqrt(length(KtBinList{i}));
-    if length(KtBinList{i})<3
-        KtMean(i)=NaN;
-        KtStd(i)=NaN;
-    end
-end
-%%
-errorbar(Ptbin,KtMean,KtStd,'MarkerFaceColor',[1 1 0],'Marker','diamond',...
-    'LineStyle','none',...
-    'Color',[1 0 0],'DisplayName','EoS')
-% scatter(Ptbin,KtMean);
-% scatter(Ptlist,Ktlist)
-xlim([0,4])
-hold on
-[ KappaTilde, PTilde, ~, ~ ] = VirialUnitarity(  );
-plot(PTilde,KappaTilde,'color','b','linewidth',3,'DisplayName','Virial Expansion');
-legend('show')
-xlabel('P/P_0');ylabel('\kappa/\kappa_0');
-hold off
-
 
 %%
 PtBinMin=0.3;
 PtBinMax=5;
 N=100;
-thres=3;
+thres=6;
 PtGrid=logspace(log(PtBinMin)/log(10),log(PtBinMax)/log(10),N);
 [ PtMean,KtMean,PtStd,KtStd ] = BinGrid( PtlistF,KtlistF,PtGrid,thres );
 %%
@@ -111,35 +67,96 @@ xlabel('P/P_0');ylabel('\kappa/\kappa_0');
 hold off
 
 %%
-%Try bin with Kt in high T
-Ks=1.5
-Mark1=KtlistF>Ks;
-Mark2=KtlistF<=Ks;
-PtBinMin=0.3;
-PtBinMax=5;
-N=100;
-thres=3;
-PtGrid=logspace(log(PtBinMin)/log(10),log(PtBinMax)/log(10),N);
-[ PtMean1,KtMean1,PtStd1,KtStd1 ] = BinGrid( PtlistF(Mark1),KtlistF(Mark1),PtGrid,10);
-KtGrid=linspace(0.3,Ks+1,40);
-[ KtMean2,PtInvMean2,KtStd1,PtInvStd2 ] = BinGrid( KtlistF(Mark2),1./PtlistF(Mark2),KtGrid,10);
-PtMean2=1./PtInvMean2;
+mli=9.988346*10^-27;  %kg
+hbar=1.0545718*10^(-34); %SI
+hh=2*pi*hbar;%SI Planck constant
+omega=23.9*2*pi; %in rad/s
+pixellength=1.44*10^-6; %in m
+sigma0=0.215*10^-12/2; %in m^2
+Nsat=330; %PI Camera
+[ KappaTildeT_Pol, PTildeT_Pol,TTildeT_Pol] = IdealFermiEOS(  );
+Xdash=0.1:0.05:6;
+Ydash=1./Xdash;
+[ KappaTildeT_U, PTildeT_U, TTildeT_U, ~, ~] = ...
+    VirialUnitarity( );
 
 %%
-scatter(PtMean1,KtMean1);
-% scatter(Ptbin,KtMean);
-% scatter(Ptlist,Ktlist)
-xlim([0,7])
+
+figure1=figure('Name','Figure');
+axes1 = axes;
+
+errorbar1derr_Z(PtMean,KtMean,KtStd,'Markersize',5,'MarkerFaceColor',[1 1 0],'Marker','.','LineStyle','none','Color',[1 0 0],'ErrLineWidth',0.5);
+
 hold on
-scatter(PtMean2,KtMean2);
-[ KappaTilde, PTilde, ~, ~ ] = VirialUnitarity(  );
-plot(PTilde,KappaTilde,'color','b','linewidth',3,'DisplayName','Virial Expansion');
-legend('show')
+p2=plot(Xdash,Ydash,'k--');
+set(p2,'DisplayName','KappaTilde*PTilde=1');
+p3=plot(PTildeT_U,KappaTildeT_U);
+set(p3,'DisplayName','Virial Expansion 3rd order','LineWidth',1.5,...
+    'Color',[0 0.447058826684952 0.74117648601532]);
+%p4=scatter(Ptbin_Pol,KtMean_Pol,'k*');
+%set(p4,'DisplayName','Simulated Polarized Fermi Gas EoS')
+%p5=plot(PTildeT_Pol,KappaTildeT_Pol,'linewidth',3);
+%set(p5,'DisplayName','Ideal Polarized Fermi Gas EoS')
+xlim([0,4]);
+ylim([0,4]);
 xlabel('P/P_0');ylabel('\kappa/\kappa_0');
+set(axes1,'XTick',[0 1 2 3 4],'YTick',[0 1 2 3 4]);
+set(axes1,'Units','inches','Position',[2 2 2.8 2.4]);
 hold off
+
 %%
-x = 1:10;
-xe = 0.5*ones(size(x));
-y = sin(x);
-ye = std(y)*ones(size(x));
-H=errorbarxy(x,y,xe,ye,{'ko-', 'b', 'r'});
+PtU=PtMean;
+KtU=KtMean;
+% the cutoff value for the pressure.
+Ptcutoff=4;
+
+
+KtU(PtU>Ptcutoff)=[];
+PtU(PtU>Ptcutoff)=[];
+PtU(isnan(KtU))=[];
+KtU(isnan(KtU))=[];
+
+Ttcutoff=interp1(PTildeT_U,TTildeT_U,max(PtU));
+figure1=figure('Name','Figure');
+axes1 = axes;
+TtU=GetTTilde(PtU,KtU,Ttcutoff);
+p1=scatter(TtU,KtU,'DisplayName','Experiment Data Unitary');
+hold on
+pbaspect([1 0.5 1])
+plot(TTildeT_U,KappaTildeT_U,'r','linewidth',3,'DisplayName','Virial Expansion 3rd order');
+xlabel('T/T_F');
+ylabel('\kappa/\kappa_0')
+title('\kappa/\kappa_0 vs T/T_F');
+xlim([0,1.5])
+p3=line([0.167,0.167],[0,3],'linewidth',1,'DisplayName','Tc=0.167');
+%scatter(Tt_pol,KtMean_Pol,'DisplayName','Simulated Polarize Gas')
+%plot(TTildeT_Pol,KappaTildeT_Pol,'DisplayName','Ideal Polarize Gas','linewidth',3)
+%legend('show');
+hold off
+
+%%
+%%Try to get C_V with P,Kappa and T
+Cvt_PKTU = GetCvTilde( PtU,KtU,TtU );
+Cvt_PKTU = Cvt_PKTU;
+
+figure1=figure('Name','Figure');
+axes1 = axes;
+plot(TtU,Cvt_PKTU,'.','color',[0 0.45 0.74],'markersize',20);
+hold on
+line([0.167,0.167],[-1,3],'color','k','linewidth',3)
+CvTildeT_U=GetCvTilde( PTildeT_U,KappaTildeT_U,TTildeT_U );
+plot(TTildeT_U,CvTildeT_U,'DisplayName','Virial Expansion','linewidth',1,'color',[0.85,0.33,0.1]);
+pbaspect([1 0.5 1])
+ylim([0,2.5]);xlim([0,1.5]);
+xlabel('T/T_F');
+ylabel('C_V/(k_B N)');
+%scatter(Tt_pol,CvTilde_Sim_Pol,'k*','DisplayName','Simulated Polarized Gas');
+%plot(TTildeT,CvTildeT_Pol,'DisplayName','Ideal Polarized Gas','LineWidth',3);
+%title('C_V get from PTilde,kappaTilde,TTilde');
+%line([0.167,0.167],[0,3],'linewidth',1,'DisplayName','Tc=0.167');
+%legend('show');
+hold off
+set(axes1,'XTick',[0 0.5 1 1.5],'YTick',[0 1 2]);
+set(axes1,'Units');
+savefig(figure1,'Cv.fig');
+print(figure1,'Cv','-dpdf');

@@ -60,5 +60,5 @@ Nxy=N3D(:,:,z==0);
 N2D=squeeze(sum(N3D,2))';
 imagesc(N2D);
 %%
-[Pt,Kt,nsort,Vsort,Zsort,Ptsel,Ktsel,EFsort,P,zcor] = EOS_Online(N2D,'Fudge',1,'ROI1',[160,50,350,460],'KappaMode',2,'PolyOrder',10,'VrangeFactor',5,'IfHalf',0,...
-    'BGSubtraction',0,'IfFitExpTail',0,'IfBin',0,'SM',4,'ShowPlot',1,'CutOff',inf,'IfHalf',0)
+[Pt,Kt,nsort,Vsort,Zsort,Ptsel,Ktsel,EFsort,P,zcor] = EOS_Online(N2D,'Fudge',1,'ROI1',[160,50,350,460],'KappaMode',5,'PolyOrder',10,'VrangeFactor',5,'IfHalf',0,...
+    'BGSubtraction',0,'IfFitExpTail',0,'IfBin',1,'SM',2,'ShowPlot',1,'CutOff',inf,'IfHalf',0)
