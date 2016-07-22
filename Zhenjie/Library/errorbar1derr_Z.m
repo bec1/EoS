@@ -36,6 +36,7 @@ end
 for i=1:length(y)
     line([x(i),x(i)],[y(i)-yerr(i),y(i)+yerr(i)],'Color',ErrBarColor,'Linewidth',ErrLineWidth);
 end
+
 hold on
 hh=plot(x,y,'LineStyle',LineStyle,'color',Color,'MarkerFaceColor',MarkerFaceColor,'Marker',Marker,...
     'Markersize',Markersize,'MarkerEdgeColor',MarkerEdgeColor);

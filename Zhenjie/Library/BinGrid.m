@@ -1,4 +1,4 @@
-function [ XMean,YMean,XStd,YStd ] = BinGrid( Xdata,Ydata,Xgrid,thres )
+function [ XMean,YMean,XStdM,YStdM,XStd,YStd ] = BinGrid( Xdata,Ydata,Xgrid,thres )
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 Xgrid=sort(Xgrid);
@@ -25,19 +25,23 @@ for i=1:N
 end
 
 XMean=Xgrid(1:end-1)*0;
-XStd=XMean;
+XStdM=XMean;
 YMean=XMean;
+YStdM=XMean;
+XStd=XMean;
 YStd=XMean;
 
 for i=1:M-1
     if length(Xcell{i})>=thres
         XMean(i)=mean(Xcell{i});
         YMean(i)=mean(Ycell{i});
-        XStd(i)=std(Xcell{i})/sqrt(length(Xcell{i}));
-        YStd(i)=std(Ycell{i})/sqrt(length(Ycell{i}));
+        XStdM(i)=std(Xcell{i})/sqrt(length(Xcell{i}));
+        YStdM(i)=std(Ycell{i})/sqrt(length(Ycell{i}));
+        XStd(i)=std(Xcell{i});
+        YStd(i)=std(Ycell{i});
     else
-        XMean(i)=NaN;XStd(i)=NaN;
-        YMean(i)=NaN;YStd(i)=NaN;
+        XMean(i)=NaN;XStdM(i)=NaN;XStd(i)=NaN;
+        YMean(i)=NaN;YStdM(i)=NaN;YStd(i)=NaN;
     end
 end
 

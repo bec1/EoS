@@ -11,13 +11,15 @@ function [n,z] = GenNvsZ( Img,ROI1,ROI2,pixelsize,z0,ellipticity,varargin)
 %z0 is the center of the cloud.
 
 ShowOutline=false;
+Nmethod=0;
 
 for i =1:length(varargin)
     if ischar(varargin{i})
     switch varargin{i}
         case 'ShowOutline'
             ShowOutline=varargin{i+1};    
-        otherwise        
+        case 'Nmethod'
+            Nmethod=varargin{i+1};
     end
     end
 end
@@ -45,7 +47,7 @@ end
 
 %check end
 Y=ROI1(2):ROI1(4);
-[n,Z] = GetnvsZ( Img,x1,x2,Y,pixelsize,ellipticity);
+[n,Z] = GetnvsZ( Img,x1,x2,Y,pixelsize,ellipticity,'Nmethod',Nmethod);
 n=n';
 z=Z'-z0;
 end

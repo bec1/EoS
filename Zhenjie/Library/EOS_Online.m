@@ -36,6 +36,7 @@ SM=1;
 IfBin=0;
 BinGridSize=100;
 IfSuperSampling=0;
+Nmethod=0;
 
 for i =1:length(varargin)
     if ischar(varargin{i})
@@ -105,6 +106,8 @@ for i =1:length(varargin)
                 IfFourierFilter=varargin{i+1};
             case 'CutOffFactor'
                 CutOffFactor=varargin{i+1};
+            case 'Nmethod'
+                Nmethod=varargin{i+1};
         end
     end
 end
@@ -181,7 +184,7 @@ if IfSuperSampling
 end
 
 %Get the position of the tail, and tailor the tail to be a flat line
-[n,z]=GenNvsZ( Nimg,ROI1,ROI2,pixellength,0,1 ,'ShowOutline',ShowOutline);
+[n,z]=GenNvsZ( Nimg,ROI1,ROI2,pixellength,0,1 ,'ShowOutline',ShowOutline,'Nmethod',Nmethod);
 
 
 if CropTail
@@ -296,7 +299,9 @@ else
     Vsel=Vsort(mask);
 end
 
-EFsort=real(hbar^2*(6*pi^2*nsort).^(2/3)/(2*mli));
+%EFsort=real(hbar^2*(6*pi^2*nsort).^(2/3)/(2*mli));
+
+EFsort=sign(nsort).*(hbar^2*(6*pi^2*abs(nsort)).^(2/3)/(2*mli));
 
 %Plot nvsz with TF fitting
 if FinalPlot
